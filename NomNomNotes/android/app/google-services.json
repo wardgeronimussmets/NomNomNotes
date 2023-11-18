@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "847145424984",
+    "project_id": "nomnomnotes-c66d8",
+    "storage_bucket": "nomnomnotes-c66d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847145424984:android:842b8fdfbac85e9f0d122d",
+        "android_client_info": {
+          "package_name": "com.nomnomnotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuMvJpjwo7YVAvUZSUBBs8XzmUsK5lm5c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
