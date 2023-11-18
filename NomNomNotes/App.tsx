@@ -5,8 +5,10 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useEffect, useState} from 'react';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import LoginScreen from './screens/loginScreen';
+import ListOverviewScreen from './screens/listOverview';
 import {
   SafeAreaView,
   ScrollView,
@@ -25,38 +27,23 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const App = () =>{
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  useEffect(() => {
+    // Auth listener
+    const unsubscribe = auth().onAuthStateChanged((authUser) => {
+      authUser ? setUser(authUser) : setUser(null);
+    });
+
+    // Cleanup function
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const isDarkMode: boolean = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -68,32 +55,14 @@ function App(): JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+      <Text>Hello senor</Text>
+      <View style={styles.fullPage}>
+        {user ? <ListOverviewScreen isDarkMode={isDarkMode}/> : <LoginScreen/>}
+      </View>
     </SafeAreaView>
   );
+
+
 }
 
 const styles = StyleSheet.create({
@@ -113,6 +82,10 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  fullPage: {
+    height: '100%',
+    alignItems: 'center'
+  }
 });
 
 export default App;
