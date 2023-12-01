@@ -8,7 +8,6 @@
 import React, {useEffect, useState} from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import LoginScreen from './screens/loginScreen';
-import ListOverviewScreen from './screens/listOverview';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,6 +25,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import HomeScreen from './screens/homeScreen';
 
 const App = () =>{
 
@@ -45,6 +45,11 @@ const App = () =>{
 
   const isDarkMode: boolean = useColorScheme() === 'dark';
 
+  const userData = {
+    isDarkMode: isDarkMode,
+    user: user
+  }
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -57,7 +62,7 @@ const App = () =>{
       />
       <Text>Hello senor</Text>
       <View style={styles.fullPage}>
-        {user ? <ListOverviewScreen isDarkMode={isDarkMode}/> : <LoginScreen/>}
+        {user ? <HomeScreen userData={userData}/> : <LoginScreen/>}
       </View>
     </SafeAreaView>
   );

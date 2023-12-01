@@ -7,7 +7,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {View, StyleSheet} from 'react-native';
 
-const LoginScreen = () => {
+const LoginScreen = (): JSX.Element => {
   
   // Initialize google sign in
   GoogleSignin.configure({
