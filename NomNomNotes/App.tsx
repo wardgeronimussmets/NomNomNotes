@@ -1,96 +1,50 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React, {useEffect, useState} from 'react';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import LoginScreen from './screens/loginScreen';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { NavigationContainer} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/homeScreen';
+import ListCreateScreen from './screens/listCreateScreen';
+import LoginScreen from './screens/loginScreen';
+import React, {useState, useEffect} from 'react';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+
+
+
+const Stack = createNativeStackNavigator();
+
 
 const App = () =>{
 
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
+  
   useEffect(() => {
     // Auth listener
     const unsubscribe = auth().onAuthStateChanged((authUser) => {
-      authUser ? setUser(authUser) : setUser(null);
+    authUser ? setUser(authUser) : setUser(null);
     });
 
     // Cleanup function
     return () => {
-      unsubscribe();
+    unsubscribe();
     };
   }, []);
 
-  const isDarkMode: boolean = useColorScheme() === 'dark';
-
-  const userData = {
-    isDarkMode: isDarkMode,
-    user: user
-  }
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <Text>Hello senor</Text>
-      <View style={styles.fullPage}>
-        {user ? <HomeScreen userData={userData}/> : <LoginScreen/>}
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Login'>
+        {user ? (
+          <>
+            <Stack.Screen name='Home' component={HomeScreen}/>
+            <Stack.Screen name='CreateList' component={ListCreateScreen}/>
+          </>
+        ) : (
+          <>
+            <Stack.Screen name='Login' component={LoginScreen}/>
+          </>
+        )}
+        
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-
-
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  fullPage: {
-    height: '100%',
-    alignItems: 'center'
-  }
-});
 
 export default App;

@@ -1,28 +1,66 @@
-import {View, Text} from 'react-native';
+import {View, Text, Button, SafeAreaView, useColorScheme, StatusBar} from 'react-native';
+import {useState, useEffect} from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {
+    Colors,
+    DebugInstructions,
+    Header,
+    LearnMoreLinks,
+    ReloadInstructions,
+  } from 'react-native/Libraries/NewAppScreen';
 
-const HomeScreen = (userData: any): JSX.Element => {
+import LoginScreen from './loginScreen';
 
-    const isDarkMode: boolean = userData.isDarkMode;
-    const user: FirebaseAuthTypes.User = userData.user;
+const HomeScreen = (): JSX.Element => {
 
-    //console.log(firestore().collection("userList").get());  
-    console.log("user: " + user);
-    const userListReference = firestore().collection('users').doc(user.uid)
+    const [userLists, setUsersLists] = useState(null);
+
+    const userUid = auth().currentUser?.uid;
+
+    const isDarkMode: boolean = useColorScheme() === 'dark';
+    const backgroundStyle = {
+      backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    };
+
+
+    const createNewUserDoc = (userUid: string) =>{
+        firestore().collection(DatabaseReferences.USERS)
+        .doc(userUid)
+        .set({
+            lists: []
+        })
+        .then(() => {
+            console.log('User added!');
+            
+        });
+    }
+
+    const getUserLists = () =>{
+        var userListDoc = firestore().collection(DatabaseReferences.USERS).doc(userUid)
         .get()
         .catch((error) => {
-            console.log("Error getting documents: ", error);
+            if(error.code == Exceptions.PERMISSION_DENIED){
+                {userUid ? createNewUserDoc(userUid) : null}
+            }
+            else{
+                console.log("Error getting documents: ", error);
+            }
         });
-    console.log(userListReference);
+        console.log(userListDoc);
+    }
 
-   
-
-    //const ratingListIds: string[] = firestore().collection("userList");
-
+    const createNewListCallback = () => {
+      console.log("Callback button clicked");
+    }
     return(
-        <Text>Home</Text>
-
+        <SafeAreaView style={backgroundStyle}>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={backgroundStyle.backgroundColor}
+          />
+          <Button title="Create new list" onPress={() => {createNewListCallback}}></Button>
+        </SafeAreaView>
     );
 }
 

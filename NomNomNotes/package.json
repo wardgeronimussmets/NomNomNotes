@@ -10,13 +10,16 @@
     "test": "jest"
   },
   "dependencies": {
-    "@react-native-firebase/app": "^18.6.1",
-    "@react-native-firebase/auth": "^12.8.0",
-    "@react-native-firebase/firestore": "^12.8.0",
+    "@react-native-firebase/app": "^18.7.1",
+    "@react-native-firebase/auth": "^18.7.1",
+    "@react-native-firebase/firestore": "^18.7.1",
     "@react-native-google-signin/google-signin": "^7.0.0-alpha.3",
-    "react-native-vector-icons": "^8.1.0",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/native-stack": "^6.9.17",
     "react": "18.2.0",
-    "react-native": "0.72.7"
+    "react-native": "0.72.7",
+    "react-native-image-picker": "^7.0.3",
+    "react-native-vector-icons": "^8.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

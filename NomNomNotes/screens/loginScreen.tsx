@@ -1,11 +1,10 @@
-import React from 'react';
-import auth from '@react-native-firebase/auth';
-
 import {
   GoogleSigninButton,
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
 import {View, StyleSheet} from 'react-native';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+
 
 const LoginScreen = (): JSX.Element => {
   

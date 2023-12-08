@@ -1,0 +1,2 @@
+voor te kunnen navigaten in typescript moet ge dit volgen
+https://reactnavigation.org/docs/typescript/
