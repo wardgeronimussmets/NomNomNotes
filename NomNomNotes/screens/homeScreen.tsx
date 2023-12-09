@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Button, SafeAreaView, StatusBar, useColorScheme } from 'react-native';
+import { Button, SafeAreaView, StatusBar, useColorScheme, Alert } from 'react-native';
 import {
   Colors
 } from 'react-native/Libraries/NewAppScreen';
 
-const HomeScreen = (): JSX.Element => {
+const HomeScreen = ({navigation} : any): JSX.Element => {
 
     const [userLists, setUsersLists] = useState(null);
 
@@ -14,7 +14,7 @@ const HomeScreen = (): JSX.Element => {
     };
 
     const createNewListCallback = () => {
-      console.log("Callback button clicked");
+      navigation.navigate('CreateList');
     }
     return(
         <SafeAreaView style={backgroundStyle}>
@@ -22,7 +22,7 @@ const HomeScreen = (): JSX.Element => {
             barStyle={isDarkMode ? 'light-content' : 'dark-content'}
             backgroundColor={backgroundStyle.backgroundColor}
           />
-          <Button title="Create new list" onPress={() => {createNewListCallback}}></Button>
+          <Button title="Create new list" onPress={createNewListCallback}></Button>
         </SafeAreaView>
     );
 }
