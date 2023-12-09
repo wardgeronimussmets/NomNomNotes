@@ -1,3 +1,5 @@
-@react-native-firebase/app
-@react-native-firebase/auth
-@react-native-firebase/firestore
+@react-native-firebase/app @react-native-firebase/auth @react-native-firebase/firestore
+@react-navigation/native-stack
+@react-navigation/native
+
+npm install react-native-screens react-native-safe-area-context

@@ -1,54 +1,17 @@
-import {View, Text, Button, SafeAreaView, useColorScheme, StatusBar} from 'react-native';
-import {useState, useEffect} from 'react';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { useState } from 'react';
+import { Button, SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 import {
-    Colors,
-    DebugInstructions,
-    Header,
-    LearnMoreLinks,
-    ReloadInstructions,
-  } from 'react-native/Libraries/NewAppScreen';
-
-import LoginScreen from './loginScreen';
+  Colors
+} from 'react-native/Libraries/NewAppScreen';
 
 const HomeScreen = (): JSX.Element => {
 
     const [userLists, setUsersLists] = useState(null);
 
-    const userUid = auth().currentUser?.uid;
-
     const isDarkMode: boolean = useColorScheme() === 'dark';
     const backgroundStyle = {
       backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
-
-
-    const createNewUserDoc = (userUid: string) =>{
-        firestore().collection(DatabaseReferences.USERS)
-        .doc(userUid)
-        .set({
-            lists: []
-        })
-        .then(() => {
-            console.log('User added!');
-            
-        });
-    }
-
-    const getUserLists = () =>{
-        var userListDoc = firestore().collection(DatabaseReferences.USERS).doc(userUid)
-        .get()
-        .catch((error) => {
-            if(error.code == Exceptions.PERMISSION_DENIED){
-                {userUid ? createNewUserDoc(userUid) : null}
-            }
-            else{
-                console.log("Error getting documents: ", error);
-            }
-        });
-        console.log(userListDoc);
-    }
 
     const createNewListCallback = () => {
       console.log("Callback button clicked");
