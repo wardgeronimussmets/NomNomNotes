@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
-
+import firestore from '@react-native-firebase/firestore';
 
 const ListCreateScreen = () =>{
     const [listTitle, onChangeListTitle] = useState('');
     const [listDescription, onChangeListDescription] = useState('');
-    const [selectedImage, onChangeSelectedImage] = useState<string | null>(null);
+    const [selectedImageBase64, onChangeSelectedImageBase64] = useState<string | null>(null);
+    const [selectedImageUri, onChangeSelectedImageUri] = useState<string | null>(null);
+
 
     const openImagePicker = () =>{
         const options:ImageLibraryOptions = {
@@ -22,16 +24,33 @@ const ListCreateScreen = () =>{
             } else if (response.errorCode) {
               console.log('Image picker error: ', response.errorMessage);
             } else {
+                const selectedImageBase64 = response?.assets?.[0].base64;
+                if(selectedImageBase64){
+                    onChangeSelectedImageBase64(selectedImageBase64);
+                }
                 const selectedImageUri = response?.assets?.[0].uri;
                 if(selectedImageUri){
-                    onChangeSelectedImage(selectedImageUri);
+                    onChangeSelectedImageUri(selectedImageUri);
                 }
             }
           });
     }
 
     const storeNewList = () => {
-        console.log("storing new list");
+
+        //first store the image
+        firestore()
+            .collection('ratingList')
+            .add({
+                name: listTitle,
+                description: listDescription,
+                imageBase64: selectedImageBase64                
+            }).catch((err) => {
+                console.log(err);
+            })
+            .then(() => {
+                console.log("storing new list");
+            });
     }
 
     const styles = StyleSheet.create({
@@ -78,10 +97,10 @@ const ListCreateScreen = () =>{
                 style={styles.normal_text}
                 placeholder='list description'/>
             <Text style={styles.subtitle_text}>List logo</Text>
-            {selectedImage ? (
+            {selectedImageUri ? (
                 <Image
                     style={styles.logo} 
-                    source={{uri: selectedImage}}></Image>
+                    source={{uri: selectedImageUri}}></Image>
             ) : (
                 <View style={styles.button}>
                     <Button
