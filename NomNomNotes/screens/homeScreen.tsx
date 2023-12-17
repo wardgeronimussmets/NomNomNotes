@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, SafeAreaView, StatusBar, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { RootStackParamlist } from '../App';
@@ -18,7 +19,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
 
   const [ratingListComponents, setRatingListComponents] = useState<JSX.Element[]>([]);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const fetchRatingList = async () => {
       try {
         const querySnapshot = await firestore().collection('ratingList').get();
@@ -48,7 +49,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
     };
 
     fetchRatingList();
-  }, []); // Run the effect only once on component mount
+  }); // Run the effect only once on component mount
 
   const createNewListCallback = () => {
     navigation.navigate('CreateList', { uid: uid });

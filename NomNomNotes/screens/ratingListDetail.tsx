@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
@@ -24,7 +25,7 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     const [ratingItemComponents, setRatingItemComponents] = useState<JSX.Element[]>([]);
     const [indexForNewItem, setIndexForNewItem] = useState<number>(-1);
 
-    useEffect(() => {
+    useFocusEffect(() => {
         const fetchRatingItems = async () => {
             try {
                 const querySnapshot = await firestore().collection('ratingList').doc(ratingListId).get();
@@ -82,3 +83,4 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
 
 export default RatingDetailScreen;
 export type { RatingListDetailPropsStructure as RatingListDetailProps };
+
