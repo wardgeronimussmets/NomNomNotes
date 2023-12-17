@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 
 interface RatingItemOverviewProps{
-    // itemId: string;
+    itemId: string;
     itemName: string;
     itemComments: string;
     itemScore: string;

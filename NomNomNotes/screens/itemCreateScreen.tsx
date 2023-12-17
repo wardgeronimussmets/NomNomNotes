@@ -20,7 +20,7 @@ const ItemCreateScreen: React.FC<ItemCreateProp> = ({ navigation, route }) => {
     const [selectedImageUri, onChangeSelectedImageUri] = useState<string | null>(null);
     const [itemScore, onChangeItemScore] = useState("");
 
-    const { uid, ratingListRef } = route.params;
+    const { uid, ratingListRef, itemIndex } = route.params;
 
     const openImagePicker = () => {
         const options: ImageLibraryOptions = {
@@ -54,6 +54,7 @@ const ItemCreateScreen: React.FC<ItemCreateProp> = ({ navigation, route }) => {
 
     const storeNewItem = () => {
         const newItem: RatingItemOverviewProps = {
+            itemId: itemIndex.toString(),
             itemName: itemTitle,
             itemComments: itemDescription,
             itemImageURI: selectedImageURIAsSource,

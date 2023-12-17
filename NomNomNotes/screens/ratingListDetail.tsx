@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
@@ -21,10 +21,8 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     const ratingListDescription = route.params.ratingListDescription;
     const uid = route.params.uid;
 
-    navigation.setOptions({ headerTitle: ratingListTitle });
-
-
     const [ratingItemComponents, setRatingItemComponents] = useState<JSX.Element[]>([]);
+    const [indexForNewItem, setIndexForNewItem] = useState<number>(-1);
 
     useEffect(() => {
         const fetchRatingItems = async () => {
@@ -35,17 +33,22 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                 if (data) {
                     const ratingItemsData = data.ratingItems as RatingItemOverviewProps[];
                     var components: JSX.Element[] = [];
+                    var index = 0;
                     ratingItemsData.forEach(item => {
                         components.push(
                             <RatingItemOverviewComponent
+                                key={index}
+                                itemId={index.toString()}
                                 itemName={item.itemName}
                                 itemComments={item.itemComments}
                                 itemImageURI={item.itemImageURI}
                                 itemScore={item.itemScore}
                             />
-                        )
+                        );
+                        index++;
                     });
                     setRatingItemComponents(components);
+                    setIndexForNewItem(index);
                 }
             } catch (error) {
                 console.error('Error fetching rating items:', error);
@@ -54,8 +57,12 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
         fetchRatingItems();
     });
 
+    useLayoutEffect(() => {
+        navigation.setOptions({ headerTitle: ratingListTitle });
+    });
+
     const createNewItemCallback = () => {
-        navigation.navigate('ItemCreate', { uid: uid, ratingListRef:ratingListId });
+        navigation.navigate('ItemCreate', { uid: uid, ratingListRef: ratingListId, itemIndex: indexForNewItem});
     }
 
 
