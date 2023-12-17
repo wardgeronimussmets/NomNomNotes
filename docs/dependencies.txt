@@ -3,3 +3,5 @@
 @react-navigation/native
 
 npm install react-native-screens react-native-safe-area-context
+npm i react-native-vector-image @klarna/react-native-vector-drawable
+npm i metro-react-native-babel-transformer

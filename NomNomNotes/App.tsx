@@ -30,6 +30,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/homeScreen';
 import ListCreateScreen from './screens/listCreateScreen';
 import LoginScreen from './screens/loginScreen';
+import ItemCreateScreen from './screens/itemCreateScreen';
+import RatingDetailScreen, {RatingListDetailProps} from './screens/ratingListDetail';
+
+
+type RootStackParamlist = {
+  Home: {uid:string};
+  CreateList: {uid: string};
+  ItemCreate: {uid: string};
+  RatingListDetail: RatingListDetailProps;
+  Login: undefined;
+}
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -52,44 +63,28 @@ function App(): React.JSX.Element {
     };
   }, []);
 
-  const Stack = createNativeStackNavigator();
+  const RootStack = createNativeStackNavigator<RootStackParamlist>();
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <RootStack.Navigator>
         {user ? (
           <>
-            <Stack.Screen name='Home' component={HomeScreen}/>
-            <Stack.Screen name='CreateList' component={ListCreateScreen}/>
+            <RootStack.Screen name='Home' component={HomeScreen} initialParams={{uid: user.uid}}/>
+            <RootStack.Screen name='CreateList' component={ListCreateScreen}/>
+            <RootStack.Screen name='ItemCreate' component={ItemCreateScreen}/>
+            <RootStack.Screen name='RatingListDetail' component={RatingDetailScreen}/>
           </>
         ) : (
           <>
-            <Stack.Screen name='Login' component={LoginScreen}/>
+            <RootStack.Screen name='Login' component={LoginScreen}/>
           </>
         )}
         
-      </Stack.Navigator>
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
 export default App;
+export type {RootStackParamlist};

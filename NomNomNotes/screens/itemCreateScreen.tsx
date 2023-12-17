@@ -7,14 +7,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamlist } from '../App';
 
 
-type ListCreateProps = NativeStackScreenProps<RootStackParamlist, 'CreateList'>;
-
+type ItemCreateProp = NativeStackScreenProps<RootStackParamlist, 'ItemCreate'>;
 
 function getImageURIAsSrc(imageBase64:string, imageType:string):string{
     return 'data:'+imageType+';base64,'+imageBase64;
 }
 
-const ListCreateScreen:React.FC<ListCreateProps> = ({navigation, route}) =>{
+const ItemCreateScreen:React.FC<ItemCreateProp> = ({navigation, route}) =>{
     const [listTitle, onChangeListTitle] = useState('');
     const [listDescription, onChangeListDescription] = useState('');
     const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(null);
@@ -60,8 +59,7 @@ const ListCreateScreen:React.FC<ListCreateProps> = ({navigation, route}) =>{
                 name: listTitle,
                 description: listDescription,
                 imageURI: selectedImageURIAsSource,
-                allowedUsers: [uid],
-                ratingItems: []
+                allowedUsers: [uid]
 
             }).catch((err) => {
                 console.log(err);
@@ -138,4 +136,4 @@ const ListCreateScreen:React.FC<ListCreateProps> = ({navigation, route}) =>{
     );
 }
 
-export default ListCreateScreen;
+export default ItemCreateScreen;

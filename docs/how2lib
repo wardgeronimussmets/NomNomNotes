@@ -1,0 +1,6 @@
+VectorImage
+for vector image https://github.com/oblador/react-native-vector-image is used
+if you want to do IOS something should still be added, look at github
+when adding new svg run:
+    npx react-native-vector-image generate
+To add dark mode to your image, create a new file with an .dark.svg extension, ie image.svg = light and image.dark.svg = dark.
