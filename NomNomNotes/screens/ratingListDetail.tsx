@@ -63,15 +63,17 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     });
 
     const createNewItemCallback = () => {
-        navigation.navigate('ItemCreate', { uid: uid, ratingListRef: ratingListId, itemIndex: indexForNewItem});
+        navigation.navigate('ItemCreate', { uid: uid, ratingListRef: ratingListId, itemIndex: indexForNewItem });
     }
 
 
     return (
         <View>
-            <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'grey' }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 {ratingItemComponents.length === 0 ? (
-                    <Text>No rating items available</Text>
+                    <View style={{ backgroundColor: 'grey' }}>
+                        <Text>No rating items available</Text>
+                    </View>
                 ) : (
                     <>{ratingItemComponents}</>
                 )}

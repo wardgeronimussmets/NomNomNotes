@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import VectorImage from 'react-native-vector-image';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 interface RatingListOverviewComponentProps {
   docId: string;
@@ -18,7 +17,7 @@ const RatingListOverviewComponent: React.FC<RatingListOverviewComponentProps> = 
       </View>
       <View style={{ flex: 2 }}>
         {imageURI ? (
-          <Image source={{ uri: imageURI }}></Image>
+          <Image source={{ uri: imageURI }} style={{ width: 100, height: 100 }}></Image>
         ) : (<></>)}
       </View>
     </View>

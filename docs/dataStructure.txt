@@ -1,0 +1,16 @@
+ratingList
+    ratingListId(autoId2)
+        name
+        description
+        imageURI
+        allowedUsers[]:
+            userid
+        ratingItems[]: ratingListItem
+            title
+            comments
+            rating
+
+user
+    userID
+        allowedRatingLists[]: autoId1
+
