@@ -1,18 +1,18 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 interface RatingItemOverviewProps{
-    itemId: string;
+    // itemId: string;
     itemName: string;
     itemComments: string;
-    itemScore: number;
-    itemImageURI: string;
+    itemScore: string;
+    itemImageURI: string | null;
 }
 
 const RatingItemOverviewComponent:React.FC<RatingItemOverviewProps> = ():JSX.Element => {
     return (
         <View>
-
+            <Text>Item overview</Text>
         </View>
     )
 }

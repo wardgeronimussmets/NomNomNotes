@@ -24,7 +24,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
         const querySnapshot = await firestore().collection('ratingList').get();
         const components = querySnapshot.docs.map((doc) => (
           <TouchableOpacity onPress={() => {
-            console.log("henlo");
             navigation.navigate("RatingListDetail", {
               ratingListId: doc.id,
               ratingListTitle: doc.data().name,
