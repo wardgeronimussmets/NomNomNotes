@@ -6,7 +6,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamlist } from "../App";
 
 interface RatingListDetailPropsStructure{
-    navigation: any;
     ratingListId: string;
     ratingListTitle:string;
     ratingListDescription:string;
