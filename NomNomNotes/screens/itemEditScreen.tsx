@@ -123,7 +123,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerTitle: itemTitle,
+            headerTitle: isCreating?"Create new item":"Edit existing item",
             headerRight: () => (
                 !isCreating && (
                     <Button
@@ -163,16 +163,8 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
         },
     });
 
-    const storeButtonTitle = isCreating ? "Create item" : "Edit item";
-
     return (
         <View style={styles.container}>
-            {isCreating ? (
-                <Text style={styles.title_text}>Create a new Item</Text>
-
-            ) : (
-                <Text style={styles.title_text}>Edit an existing Item</Text>
-            )}
             <Text style={styles.subtitle_text}>Item title</Text>
             <TextInput
                 onChangeText={onChangeItemTitle}
@@ -214,7 +206,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
 
             <View style={styles.button}>
                 <Button
-                    title={storeButtonTitle}
+                    title={isCreating ? "Create item" : "Edit item"}
                     onPress={storeNewItem} />
             </View>
 

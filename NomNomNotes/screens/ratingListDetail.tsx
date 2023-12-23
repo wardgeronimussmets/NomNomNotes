@@ -10,6 +10,7 @@ interface RatingListDetailPropsStructure {
     ratingListId: string;
     ratingListTitle: string;
     ratingListDescription: string;
+    ratingListImageURI: string|null;
     uid: string;
 }
 
@@ -17,10 +18,8 @@ type RatingListDetailProp = NativeStackScreenProps<RootStackParamlist, 'RatingLi
 
 
 const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route }): JSX.Element => {
-    const ratingListId = route.params.ratingListId;
-    const ratingListTitle = route.params.ratingListTitle;
-    const ratingListDescription = route.params.ratingListDescription;
-    const uid = route.params.uid;
+
+    const {uid, ratingListId, ratingListTitle, ratingListDescription} = route.params;
 
     const [ratingItemComponents, setRatingItemComponents] = useState<JSX.Element[]>([]);
     const [indexForNewItem, setIndexForNewItem] = useState<number>(-1);
@@ -91,7 +90,14 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     }
 
     const editList = () => {
-
+        navigation.navigate('ListEdit',{
+            uid:uid,
+            isCreating:false,
+            itemImageURI: route.params.ratingListImageURI,
+            listDescription: route.params.ratingListDescription,
+            listTitle: route.params.ratingListTitle,
+            ratingListId: ratingListId
+        });
     }
 
     useLayoutEffect(() => {

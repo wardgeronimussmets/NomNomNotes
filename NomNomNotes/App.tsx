@@ -11,14 +11,14 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import HomeScreen from './screens/homeScreen';
 import ItemEditScreen from './screens/itemEditScreen';
-import ListCreateScreen from './screens/listCreateScreen';
+import ListEditScreen from './screens/listEditScreen';
 import LoginScreen from './screens/loginScreen';
 import RatingDetailScreen, { RatingListDetailProps } from './screens/ratingListDetail';
 
 
 type RootStackParamlist = {
   Home: { uid: string };
-  CreateList: { uid: string };
+  ListEdit: { uid: string, isCreating:boolean, listTitle:string, listDescription:string, itemImageURI:string|null, ratingListId: string|null };
   ItemEdit: { uid: string, ratingListRef: string, itemIndex: number, itemName: string, itemComments: string, itemImageURI:string|null, itemScore:string, isCreating:boolean};
   RatingListDetail: RatingListDetailProps;
   Login: undefined;
@@ -53,7 +53,7 @@ function App(): React.JSX.Element {
         {user ? (
           <>
             <RootStack.Screen name='Home' component={HomeScreen} initialParams={{ uid: user.uid }} />
-            <RootStack.Screen name='CreateList' component={ListCreateScreen} />
+            <RootStack.Screen name='ListEdit' component={ListEditScreen} />
             <RootStack.Screen name='ItemEdit' component={ItemEditScreen} />
             <RootStack.Screen name='RatingListDetail' component={RatingDetailScreen} />
           </>

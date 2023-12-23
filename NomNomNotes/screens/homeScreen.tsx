@@ -15,7 +15,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const uid = route.params.uid;
+  const {uid} = route.params;
 
   const [ratingListComponents, setRatingListComponents] = useState<JSX.Element[]>([]);
 
@@ -30,7 +30,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
                 ratingListId: doc.id,
                 ratingListTitle: doc.data().name,
                 ratingListDescription: doc.data().description,
-                uid: uid
+                uid: uid,
+                ratingListImageURI:doc.data().imageURI
               });
             }}
               key={doc.id}>
@@ -57,7 +58,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
   );
 
   const createNewListCallback = () => {
-    navigation.navigate('CreateList', { uid: uid });
+    navigation.navigate('ListEdit', { 
+      uid: uid, 
+      isCreating:true,
+      itemImageURI:null,
+      listDescription:"",
+      listTitle:"",
+      ratingListId: null
+    });
   };
 
   return (

@@ -1,26 +1,25 @@
-import { useState } from 'react';
-import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
-import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import firestore from '@react-native-firebase/firestore';
-import { RouteProp, NavigationProp } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useLayoutEffect, useState } from 'react';
+import { Button, Image, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
 
 
-type ListCreateProps = NativeStackScreenProps<RootStackParamlist, 'CreateList'>;
+type ListEditProps = NativeStackScreenProps<RootStackParamlist, 'ListEdit'>;
 
 
 function getImageURIAsSrc(imageBase64: string, imageType: string): string {
     return 'data:' + imageType + ';base64,' + imageBase64;
 }
 
-const ListCreateScreen: React.FC<ListCreateProps> = ({ navigation, route }) => {
-    const [listTitle, onChangeListTitle] = useState('');
-    const [listDescription, onChangeListDescription] = useState('');
-    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(null);
+const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
+    const [listTitle, onChangeListTitle] = useState(route.params.listTitle);
+    const [listDescription, onChangeListDescription] = useState(route.params.listDescription);
+    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(route.params.itemImageURI);
     const [selectedImageUri, onChangeSelectedImageUri] = useState<string | null>(null);
 
-    const { uid } = route.params;
+    const { uid, isCreating, ratingListId } = route.params;
 
 
     const openImagePicker = () => {
@@ -54,23 +53,43 @@ const ListCreateScreen: React.FC<ListCreateProps> = ({ navigation, route }) => {
     }
 
     const storeNewList = () => {
-        firestore()
+        const newList = {
+            name: listTitle,
+            description: listDescription,
+            imageURI: selectedImageURIAsSource,
+            allowedUsers: [uid],
+            ratingItems: []
+        };
+        if(isCreating){
+            firestore()
             .collection('ratingList')
-            .add({
-                name: listTitle,
-                description: listDescription,
-                imageURI: selectedImageURIAsSource,
-                allowedUsers: [uid],
-                ratingItems: []
-
-            }).catch((err) => {
+            .add(newList)
+            .catch((err) => {
                 console.log(err);
             })
             .then(() => {
                 console.log("storing new list");
             });
+        }
+        else{
+            if(ratingListId){
+                firestore().collection('ratingList').doc(ratingListId).update(newList)
+                .catch((err) => {
+                    console.error(err);
+                });
+            }
+            else{
+                console.error("Tried to edit a ratingList with id " + ratingListId + " if you haven't realised yet, it was null dumbass");
+            }
+        }
         navigation.goBack();
     }
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: isCreating ? "Create new list" : "Edit existing list"
+        });
+    });
 
     const styles = StyleSheet.create({
         container: {
@@ -116,10 +135,14 @@ const ListCreateScreen: React.FC<ListCreateProps> = ({ navigation, route }) => {
                 style={styles.normal_text}
                 placeholder='list description' />
             <Text style={styles.subtitle_text}>List logo</Text>
-            {selectedImageUri ? (
-                <Image
-                    style={styles.logo}
-                    source={{ uri: selectedImageUri }}></Image>
+            {selectedImageURIAsSource ? (
+                <TouchableOpacity
+                    onPress={openImagePicker}>
+                    <Image
+                        style={styles.logo}
+                        source={{ uri: selectedImageURIAsSource }}></Image>
+                </TouchableOpacity>
+
             ) : (
                 <View style={styles.button}>
                     <Button
@@ -130,7 +153,7 @@ const ListCreateScreen: React.FC<ListCreateProps> = ({ navigation, route }) => {
             )}
             <View style={styles.button}>
                 <Button
-                    title="Create new list"
+                    title={isCreating?"Create list":"Edit list"}
                     onPress={storeNewList} />
             </View>
 
@@ -138,4 +161,4 @@ const ListCreateScreen: React.FC<ListCreateProps> = ({ navigation, route }) => {
     );
 }
 
-export default ListCreateScreen;
+export default ListEditScreen;
