@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
-import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
 import { RatingItemOverviewProps } from '../components/ratingItemOverview';
@@ -16,12 +16,11 @@ function getImageURIAsSrc(imageBase64: string, imageType: string): string {
 const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
     const [itemTitle, onChangeItemTitle] = useState(route.params.itemName);
     const [itemDescription, onChangeItemDescription] = useState(route.params.itemComments);
-    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(null);
+    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(route.params.itemImageURI);
     const [selectedImageUri, onChangeSelectedImageUri] = useState<string | null>(null);
     const [itemScore, onChangeItemScore] = useState(route.params.itemScore);
 
     const { uid, ratingListRef, itemIndex, isCreating } = route.params;
-    console.log(itemIndex);
 
     const openImagePicker = () => {
         const options: ImageLibraryOptions = {
@@ -53,7 +52,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
         });
     }
 
-    const storeNewItem = async() => {
+    const storeNewItem = async () => {
         const newItem: RatingItemOverviewProps = {
             itemId: itemIndex.toString(),
             itemName: itemTitle,
@@ -62,26 +61,26 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             itemScore: itemScore
         }
 
-        if(isCreating){
+        if (isCreating) {
             firestore()
-            .collection('ratingList').doc(ratingListRef).
-            update({
-                ratingItems: firestore.FieldValue.arrayUnion(newItem)
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+                .collection('ratingList').doc(ratingListRef).
+                update({
+                    ratingItems: firestore.FieldValue.arrayUnion(newItem)
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
-        else{
+        else {
             const doc = await firestore().collection('ratingList').doc(ratingListRef).get();
             const currentArray: RatingItemOverviewProps[] = doc.data()?.ratingItems;
-            if(!currentArray){
+            if (!currentArray) {
                 console.log("Couldn't get ratingItems for the given doc " + ratingListRef);
             }
-            else if(!currentArray[itemIndex]){
-                console.log("no item in ratingItem array for index " + itemIndex + " the array has length="+currentArray.length);
+            else if (!currentArray[itemIndex]) {
+                console.log("no item in ratingItem array for index " + itemIndex + " the array has length=" + currentArray.length);
             }
-            else{
+            else {
                 currentArray[itemIndex].itemId = itemIndex.toString();
                 currentArray[itemIndex].itemName = itemTitle;
                 currentArray[itemIndex].itemComments = itemDescription;
@@ -89,16 +88,52 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                 currentArray[itemIndex].itemScore = itemScore;
 
                 await firestore().collection('ratingList').doc(ratingListRef).update({
-                    ratingItems:currentArray
+                    ratingItems: currentArray
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
+                    .catch((err) => {
+                        console.log(err);
+                    });
             }
 
         }
         navigation.goBack();
     }
+
+    const removeItem = async () => {
+        const doc = await firestore().collection('ratingList').doc(ratingListRef).get();
+        const currentArray: RatingItemOverviewProps[] = doc.data()?.ratingItems;
+        if (!currentArray) {
+            console.log("Couldn't get ratingItems for the given doc " + ratingListRef);
+        }
+        else if (!currentArray[itemIndex]) {
+            console.log("no item in ratingItem array for index " + itemIndex + " the array has length=" + currentArray.length);
+        }
+        else {
+            currentArray.splice(itemIndex, 1);
+
+            await firestore().collection('ratingList').doc(ratingListRef).update({
+                ratingItems: currentArray
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+        navigation.goBack();
+    }
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: itemTitle,
+            headerRight: () => (
+                !isCreating && (
+                    <Button
+                    onPress={removeItem}
+                    title="Remove Item"
+                />
+                )
+            ),
+        });
+    });
 
     const styles = StyleSheet.create({
         container: {
@@ -160,10 +195,14 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
 
 
             <Text style={styles.subtitle_text}>Item image</Text>
-            {selectedImageUri ? (
-                <Image
-                    style={styles.logo}
-                    source={{ uri: selectedImageUri }}></Image>
+            {selectedImageURIAsSource ? (
+                <TouchableOpacity
+                    onPress={openImagePicker}
+                >
+                    <Image
+                        style={styles.logo}
+                        source={{ uri: selectedImageURIAsSource }}></Image>
+                </TouchableOpacity>
             ) : (
                 <View style={styles.button}>
                     <Button
@@ -172,6 +211,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                 </View>
 
             )}
+
             <View style={styles.button}>
                 <Button
                     title={storeButtonTitle}

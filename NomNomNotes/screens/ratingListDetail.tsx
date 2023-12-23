@@ -91,7 +91,7 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
             ratingListRef: ratingListId, 
             itemIndex: indexForNewItem,
             itemComments: "",
-            itemImageURI: "",
+            itemImageURI: null,
             itemName: "",
             itemScore: "",
             isCreating: true,
