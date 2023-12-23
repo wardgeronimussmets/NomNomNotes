@@ -38,19 +38,25 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                         var components: JSX.Element[] = [];
                         var index = 0;
                         ratingItemsData.forEach(item => {
+                            var newIndex = index;
                             components.push(
                                 <TouchableOpacity
                                     onPress={() => {
                                         navigation.navigate('ItemEdit', {
                                             uid: uid,
                                             ratingListRef: ratingListId,
-                                            itemIndex: index
+                                            itemIndex: newIndex,
+                                            itemComments: item.itemComments,
+                                            itemImageURI: item.itemImageURI,
+                                            itemName: item.itemName,
+                                            itemScore: item.itemScore,
+                                            isCreating: false,
                                         });
                                     }}
-                                    key={index}
+                                    key={newIndex}
                                 >
                                     <RatingItemOverviewComponent
-                                        itemId={index.toString()}
+                                        itemId={newIndex.toString()}
                                         itemName={item.itemName}
                                         itemComments={item.itemComments}
                                         itemImageURI={item.itemImageURI}
@@ -80,24 +86,33 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     });
 
     const createNewItemCallback = () => {
-        navigation.navigate('ItemEdit', { uid: uid, ratingListRef: ratingListId, itemIndex: indexForNewItem });
-    }
+        navigation.navigate('ItemEdit', {
+            uid: uid,
+            ratingListRef: ratingListId, 
+            itemIndex: indexForNewItem,
+            itemComments: "",
+            itemImageURI: "",
+            itemName: "",
+            itemScore: "",
+            isCreating: true,
+        });
+}
 
 
-    return (
-        <View>
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                {ratingItemComponents.length === 0 ? (
-                    <View style={{ backgroundColor: 'grey' }}>
-                        <Text>No rating items available</Text>
-                    </View>
-                ) : (
-                    <>{ratingItemComponents}</>
-                )}
-            </View>
-            <Button title="Create new item" onPress={createNewItemCallback} />
+return (
+    <View>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            {ratingItemComponents.length === 0 ? (
+                <View style={{ backgroundColor: 'grey' }}>
+                    <Text>No rating items available</Text>
+                </View>
+            ) : (
+                <>{ratingItemComponents}</>
+            )}
         </View>
-    )
+        <Button title="Create new item" onPress={createNewItemCallback} />
+    </View>
+)
 }
 
 export default RatingDetailScreen;

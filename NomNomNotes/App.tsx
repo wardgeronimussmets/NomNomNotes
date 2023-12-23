@@ -26,7 +26,7 @@ import RatingDetailScreen, { RatingListDetailProps } from './screens/ratingListD
 type RootStackParamlist = {
   Home: { uid: string };
   CreateList: { uid: string };
-  ItemEdit: { uid: string, ratingListRef: string, itemIndex: number };
+  ItemEdit: { uid: string, ratingListRef: string, itemIndex: number, itemName: string, itemComments: string, itemImageURI:string|null, itemScore:string, isCreating:boolean};
   RatingListDetail: RatingListDetailProps;
   Login: undefined;
 }

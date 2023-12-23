@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
@@ -14,13 +14,14 @@ function getImageURIAsSrc(imageBase64: string, imageType: string): string {
 }
 
 const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
-    const [itemTitle, onChangeItemTitle] = useState('');
-    const [itemDescription, onChangeItemDescription] = useState('');
+    const [itemTitle, onChangeItemTitle] = useState(route.params.itemName);
+    const [itemDescription, onChangeItemDescription] = useState(route.params.itemComments);
     const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(null);
     const [selectedImageUri, onChangeSelectedImageUri] = useState<string | null>(null);
-    const [itemScore, onChangeItemScore] = useState("");
+    const [itemScore, onChangeItemScore] = useState(route.params.itemScore);
 
-    const { uid, ratingListRef, itemIndex } = route.params;
+    const { uid, ratingListRef, itemIndex, isCreating } = route.params;
+    console.log(itemIndex);
 
     const openImagePicker = () => {
         const options: ImageLibraryOptions = {
@@ -52,7 +53,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
         });
     }
 
-    const storeNewItem = () => {
+    const storeNewItem = async() => {
         const newItem: RatingItemOverviewProps = {
             itemId: itemIndex.toString(),
             itemName: itemTitle,
@@ -61,17 +62,41 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             itemScore: itemScore
         }
 
-        firestore()
+        if(isCreating){
+            firestore()
             .collection('ratingList').doc(ratingListRef).
             update({
                 ratingItems: firestore.FieldValue.arrayUnion(newItem)
             })
             .catch((err) => {
                 console.log(err);
-            })
-            .then(() => {
-                console.log("storing new item");
             });
+        }
+        else{
+            const doc = await firestore().collection('ratingList').doc(ratingListRef).get();
+            const currentArray: RatingItemOverviewProps[] = doc.data()?.ratingItems;
+            if(!currentArray){
+                console.log("Couldn't get ratingItems for the given doc " + ratingListRef);
+            }
+            else if(!currentArray[itemIndex]){
+                console.log("no item in ratingItem array for index " + itemIndex + " the array has length="+currentArray.length);
+            }
+            else{
+                currentArray[itemIndex].itemId = itemIndex.toString();
+                currentArray[itemIndex].itemName = itemTitle;
+                currentArray[itemIndex].itemComments = itemDescription;
+                currentArray[itemIndex].itemImageURI = selectedImageURIAsSource;
+                currentArray[itemIndex].itemScore = itemScore;
+
+                await firestore().collection('ratingList').doc(ratingListRef).update({
+                    ratingItems:currentArray
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            }
+
+        }
         navigation.goBack();
     }
 
@@ -103,9 +128,16 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
         },
     });
 
+    const storeButtonTitle = isCreating ? "Create item" : "Edit item";
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title_text}>Create a new Item</Text>
+            {isCreating ? (
+                <Text style={styles.title_text}>Create a new Item</Text>
+
+            ) : (
+                <Text style={styles.title_text}>Edit an existing Item</Text>
+            )}
             <Text style={styles.subtitle_text}>Item title</Text>
             <TextInput
                 onChangeText={onChangeItemTitle}
@@ -142,7 +174,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             )}
             <View style={styles.button}>
                 <Button
-                    title="Create new item"
+                    title={storeButtonTitle}
                     onPress={storeNewItem} />
             </View>
 
