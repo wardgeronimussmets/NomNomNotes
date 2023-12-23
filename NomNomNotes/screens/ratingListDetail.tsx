@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Text, View, TouchableOpacity } from "react-native";
+import { Button, Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
 
@@ -81,8 +81,31 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
         }, [])
     );
 
+    const removeList = () => {
+        firestore().collection('ratingList').doc(ratingListId)
+        .delete()
+        .catch((err) => {
+            console.error("Couldn't delete the ratingList with id " +ratingListId);
+        });
+        navigation.goBack();
+    }
+
+    const editList = () => {
+
+    }
+
     useLayoutEffect(() => {
-        navigation.setOptions({ headerTitle: ratingListTitle });
+        navigation.setOptions({ 
+            headerTitle: ratingListTitle,
+            headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                    <View style={styles.headerButton}>
+                        <Button onPress={editList} title='Edit list'/>
+                    </View>
+                    <Button onPress={removeList} title='Remove list'/>
+                </View>
+            ) 
+        });
     });
 
     const createNewItemCallback = () => {
@@ -98,6 +121,15 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
         });
 }
 
+const styles= StyleSheet.create({
+    headerButtonContainer: {
+        flexDirection:'row'
+    },
+    headerButton: {
+        paddingHorizontal: 10
+    }
+
+});
 
 return (
     <View>
