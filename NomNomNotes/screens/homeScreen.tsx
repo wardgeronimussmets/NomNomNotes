@@ -19,37 +19,42 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
 
   const [ratingListComponents, setRatingListComponents] = useState<JSX.Element[]>([]);
 
-  useFocusEffect(() => {
-    const fetchRatingList = async () => {
-      try {
-        const querySnapshot = await firestore().collection('ratingList').get();
-        const components = querySnapshot.docs.map((doc) => (
-          <TouchableOpacity onPress={() => {
-            navigation.navigate("RatingListDetail", {
-              ratingListId: doc.id,
-              ratingListTitle: doc.data().name,
-              ratingListDescription: doc.data().description,
-              uid: uid
-            });
-          }}
-            key={doc.id}>
-            <RatingListOverviewComponent
-              docId={doc.id}
-              title={doc.data().name}
-              description={doc.data().description}
-              imageURI={doc.data().imageURI}
-            />
-          </TouchableOpacity>
-
-        ));
-        setRatingListComponents(components);
-      } catch (error) {
-        console.error('Error fetching ratingList: ', error);
-      }
-    };
-
-    fetchRatingList();
-  }); // Run the effect only once on component mount
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchRatingList = async () => {
+        try {
+          const querySnapshot = await firestore().collection('ratingList').get();
+          const components = querySnapshot.docs.map((doc) => (
+            <TouchableOpacity onPress={() => {
+              navigation.navigate("RatingListDetail", {
+                ratingListId: doc.id,
+                ratingListTitle: doc.data().name,
+                ratingListDescription: doc.data().description,
+                uid: uid
+              });
+            }}
+              key={doc.id}>
+              <RatingListOverviewComponent
+                docId={doc.id}
+                title={doc.data().name}
+                description={doc.data().description}
+                imageURI={doc.data().imageURI}
+              />
+            </TouchableOpacity>
+  
+          ));
+          setRatingListComponents(components);
+        } catch (error) {
+          console.error('Error fetching ratingList: ', error);
+        }
+      };
+  
+      fetchRatingList();
+        return () => {
+            // Cleanup function
+        };
+    }, [])
+  );
 
   const createNewListCallback = () => {
     navigation.navigate('CreateList', { uid: uid });

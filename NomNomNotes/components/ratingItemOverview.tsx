@@ -10,11 +10,11 @@ interface RatingItemOverviewProps {
 }
 
 const RatingItemOverviewComponent: React.FC<RatingItemOverviewProps> = ({ itemId, itemName, itemComments, itemScore, itemImageURI }): JSX.Element => {
-
     return (
         <View style={styles.box}>
+            <Text></Text>
             <View style={{ flex: 3 }}>
-                <Text>{itemName}</Text>
+                <Text style={styles.title}>{itemName}</Text>
                 <Text>{itemComments}</Text>
                 <Text>{itemScore} / 10</Text>
             </View>
@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 8,
         marginVertical: 8,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width:'100%',
     },
     title: {
         fontSize: 18,

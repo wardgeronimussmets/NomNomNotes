@@ -5,39 +5,28 @@
  * @format
  */
 
-import React, {useState, useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
+  useColorScheme
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  Colors
+} from 'react-native/Libraries/NewAppScreen';
 import HomeScreen from './screens/homeScreen';
+import ItemEditScreen from './screens/itemEditScreen';
 import ListCreateScreen from './screens/listCreateScreen';
 import LoginScreen from './screens/loginScreen';
-import ItemCreateScreen from './screens/itemCreateScreen';
-import RatingDetailScreen, {RatingListDetailProps} from './screens/ratingListDetail';
+import RatingDetailScreen, { RatingListDetailProps } from './screens/ratingListDetail';
 
 
 type RootStackParamlist = {
-  Home: {uid:string};
-  CreateList: {uid: string};
-  ItemCreate: {uid: string, ratingListRef: string, itemIndex: number};
+  Home: { uid: string };
+  CreateList: { uid: string };
+  ItemEdit: { uid: string, ratingListRef: string, itemIndex: number };
   RatingListDetail: RatingListDetailProps;
   Login: undefined;
 }
@@ -70,21 +59,21 @@ function App(): React.JSX.Element {
       <RootStack.Navigator>
         {user ? (
           <>
-            <RootStack.Screen name='Home' component={HomeScreen} initialParams={{uid: user.uid}}/>
-            <RootStack.Screen name='CreateList' component={ListCreateScreen}/>
-            <RootStack.Screen name='ItemCreate' component={ItemCreateScreen}/>
-            <RootStack.Screen name='RatingListDetail' component={RatingDetailScreen}/>
+            <RootStack.Screen name='Home' component={HomeScreen} initialParams={{ uid: user.uid }} />
+            <RootStack.Screen name='CreateList' component={ListCreateScreen} />
+            <RootStack.Screen name='ItemEdit' component={ItemEditScreen} />
+            <RootStack.Screen name='RatingListDetail' component={RatingDetailScreen} />
           </>
         ) : (
           <>
-            <RootStack.Screen name='Login' component={LoginScreen}/>
+            <RootStack.Screen name='Login' component={LoginScreen} />
           </>
         )}
-        
+
       </RootStack.Navigator>
     </NavigationContainer>
   );
 }
 
 export default App;
-export type {RootStackParamlist};
+export type { RootStackParamlist };

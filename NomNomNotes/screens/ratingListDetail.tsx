@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Text, View } from "react-native";
+import { Button, Text, View, TouchableOpacity } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
 
@@ -25,45 +25,62 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     const [ratingItemComponents, setRatingItemComponents] = useState<JSX.Element[]>([]);
     const [indexForNewItem, setIndexForNewItem] = useState<number>(-1);
 
-    useFocusEffect(() => {
-        const fetchRatingItems = async () => {
-            try {
-                const querySnapshot = await firestore().collection('ratingList').doc(ratingListId).get();
-                const data = querySnapshot.data();
 
-                if (data) {
-                    const ratingItemsData = data.ratingItems as RatingItemOverviewProps[];
-                    var components: JSX.Element[] = [];
-                    var index = 0;
-                    ratingItemsData.forEach(item => {
-                        components.push(
-                            <RatingItemOverviewComponent
-                                key={index}
-                                itemId={index.toString()}
-                                itemName={item.itemName}
-                                itemComments={item.itemComments}
-                                itemImageURI={item.itemImageURI}
-                                itemScore={item.itemScore}
-                            />
-                        );
-                        index++;
-                    });
-                    setRatingItemComponents(components);
-                    setIndexForNewItem(index);
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchRatingItems = async () => {
+                try {
+                    const querySnapshot = await firestore().collection('ratingList').doc(ratingListId).get();
+                    const data = querySnapshot.data();
+
+                    if (data) {
+                        const ratingItemsData = data.ratingItems as RatingItemOverviewProps[];
+                        var components: JSX.Element[] = [];
+                        var index = 0;
+                        ratingItemsData.forEach(item => {
+                            components.push(
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        navigation.navigate('ItemEdit', {
+                                            uid: uid,
+                                            ratingListRef: ratingListId,
+                                            itemIndex: index
+                                        });
+                                    }}
+                                    key={index}
+                                >
+                                    <RatingItemOverviewComponent
+                                        itemId={index.toString()}
+                                        itemName={item.itemName}
+                                        itemComments={item.itemComments}
+                                        itemImageURI={item.itemImageURI}
+                                        itemScore={item.itemScore}
+                                    />
+
+                                </TouchableOpacity>
+                            );
+                            index++;
+                        });
+                        setRatingItemComponents(components);
+                        setIndexForNewItem(index);
+                    }
+                } catch (error) {
+                    console.error('Error fetching rating items:', error);
                 }
-            } catch (error) {
-                console.error('Error fetching rating items:', error);
-            }
-        };
-        fetchRatingItems();
-    });
+            };
+            fetchRatingItems();
+            return () => {
+                // Cleanup function
+            };
+        }, [])
+    );
 
     useLayoutEffect(() => {
         navigation.setOptions({ headerTitle: ratingListTitle });
     });
 
     const createNewItemCallback = () => {
-        navigation.navigate('ItemCreate', { uid: uid, ratingListRef: ratingListId, itemIndex: indexForNewItem });
+        navigation.navigate('ItemEdit', { uid: uid, ratingListRef: ratingListId, itemIndex: indexForNewItem });
     }
 
 

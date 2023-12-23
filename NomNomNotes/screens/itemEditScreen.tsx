@@ -7,13 +7,13 @@ import { RootStackParamlist } from '../App';
 import { RatingItemOverviewProps } from '../components/ratingItemOverview';
 
 
-type ItemCreateProp = NativeStackScreenProps<RootStackParamlist, 'ItemCreate'>;
+type ItemEditProp = NativeStackScreenProps<RootStackParamlist, 'ItemEdit'>;
 
 function getImageURIAsSrc(imageBase64: string, imageType: string): string {
     return 'data:' + imageType + ';base64,' + imageBase64;
 }
 
-const ItemCreateScreen: React.FC<ItemCreateProp> = ({ navigation, route }) => {
+const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
     const [itemTitle, onChangeItemTitle] = useState('');
     const [itemDescription, onChangeItemDescription] = useState('');
     const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(null);
@@ -150,4 +150,4 @@ const ItemCreateScreen: React.FC<ItemCreateProp> = ({ navigation, route }) => {
     );
 }
 
-export default ItemCreateScreen;
+export default ItemEditScreen;
