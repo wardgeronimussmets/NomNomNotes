@@ -180,26 +180,6 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
 
                 </ImageBackground>
             </TouchableOpacity>
-
-            {/* {selectedImageURIAsSource ? (
-                <TouchableOpacity
-                    onPress={openImagePicker}
-                >
-                    <Image
-                        style={defaultStyles.form_logo}
-                        source={{ uri: selectedImageURIAsSource }}></Image>
-                </TouchableOpacity>
-            ) : (
-
-
-                <View style={defaultStyles.form_logo}>
-
-                    <Button
-                        title='upload item picture'
-                        onPress={openImagePicker} />
-                </View>
-
-            )} */}
             <View>
                 <Button
                     title={isCreating ? "Create item" : "Edit item"}

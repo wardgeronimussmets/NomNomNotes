@@ -1,9 +1,11 @@
 import firestore from '@react-native-firebase/firestore';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useLayoutEffect, useState } from 'react';
-import { Button, Image, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
+import defaultStyles from '../style';
+import { greyImageAsSource } from '../constants';
 
 
 type ListEditProps = NativeStackScreenProps<RootStackParamlist, 'ListEdit'>;
@@ -16,7 +18,7 @@ function getImageURIAsSrc(imageBase64: string, imageType: string): string {
 const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
     const [listTitle, onChangeListTitle] = useState(route.params.listTitle);
     const [listDescription, onChangeListDescription] = useState(route.params.listDescription);
-    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(route.params.itemImageURI);
+    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string>(route.params.itemImageURI ? route.params.itemImageURI : greyImageAsSource);
     const [selectedImageUri, onChangeSelectedImageUri] = useState<string | null>(null);
 
     const { uid, isCreating, ratingListId } = route.params;
@@ -91,66 +93,40 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
         });
     });
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-        },
-        title_text: {
-            fontSize: 30,
-            fontWeight: "bold",
-            paddingBottom: 50,
-        },
-        subtitle_text: {
-            fontSize: 20,
-            fontWeight: "bold",
-        },
-        normal_text: {
-            fontSize: 20,
-        },
-        logo: {
-            width: 200,
-            height: 200,
-        },
-        button: {
-            fontSize: 20,
-            padding: 5,
-        },
-    });
-
     return (
-        <View style={styles.container}>
-            <Text style={styles.subtitle_text}>List title</Text>
+        <View style={defaultStyles.form_container}>
+            <Text style={defaultStyles.form_title}>List title</Text>
             <TextInput
                 onChangeText={onChangeListTitle}
                 value={listTitle}
-                style={styles.normal_text}
+                style={defaultStyles.form_normal}
                 placeholder='new list name' />
-            <Text style={styles.subtitle_text}>List description</Text>
+            <Text style={defaultStyles.form_title}>List description</Text>
             <TextInput
                 onChangeText={onChangeListDescription}
                 value={listDescription}
-                style={styles.normal_text}
+                style={defaultStyles.form_normal}
                 placeholder='list description' />
-            <Text style={styles.subtitle_text}>List logo</Text>
-            {selectedImageURIAsSource ? (
-                <TouchableOpacity
-                    onPress={openImagePicker}>
-                    <Image
-                        style={styles.logo}
-                        source={{ uri: selectedImageURIAsSource }}></Image>
-                </TouchableOpacity>
+            <Text style={defaultStyles.form_title}>List logo</Text>
+            <TouchableOpacity
+                onPress={openImagePicker}
+            >
+                <ImageBackground
+                    style={defaultStyles.form_logo}
+                    source={{ uri: selectedImageURIAsSource }}>
+                    {selectedImageURIAsSource === greyImageAsSource ? (
+                        <>
+                            <View style={defaultStyles.form_logo_text_view}>
+                                <Text style={defaultStyles.form_normal}>touch to edit</Text>
+                            </View>
+                        </>
+                    ) : (
+                        <></>
+                    )}
 
-            ) : (
-                <View style={styles.button}>
-                    <Button
-                        title='upload list icon'
-                        onPress={openImagePicker} />
-                </View>
-
-            )}
-            <View style={styles.button}>
+                </ImageBackground>
+            </TouchableOpacity>
+            <View>
                 <Button
                     title={isCreating?"Create list":"Edit list"}
                     onPress={storeNewList} />
