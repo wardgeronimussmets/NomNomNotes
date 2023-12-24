@@ -121,7 +121,6 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title_text}>Create a new list</Text>
             <Text style={styles.subtitle_text}>List title</Text>
             <TextInput
                 onChangeText={onChangeListTitle}

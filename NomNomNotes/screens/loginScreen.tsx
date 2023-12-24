@@ -6,30 +6,6 @@ import { View, StyleSheet } from 'react-native';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-
-function userExists(uid: string | null): boolean {
-  if (uid) {
-    firestore().collection('users').doc(uid).get()
-      .then((docSnapshot) => {
-        if (docSnapshot.exists) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      });
-  }
-  else {
-    return false;
-  }
-  return false;
-}
-function storeNewUser(uid: string) {
-  firestore().collection('users').doc(uid).set({
-    //empty doc
-  });
-}
-
 const LoginScreen = (): JSX.Element => {
 
   // Initialize google sign in
@@ -43,12 +19,7 @@ const LoginScreen = (): JSX.Element => {
     try {
       const { idToken } = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      auth().signInWithCredential(googleCredential).then(() => {
-        const uid = auth().currentUser?.uid;
-        if (uid && !userExists(uid)) {
-          storeNewUser(uid);
-        }
-      });
+      return auth().signInWithCredential(googleCredential);
     } catch (error) {
       console.log(error);
     }
