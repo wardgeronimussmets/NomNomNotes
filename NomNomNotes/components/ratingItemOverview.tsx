@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
+import defaultStyles, {cardBackgroudColor} from "../style";
 
 interface RatingItemOverviewProps {
     itemId: string;
@@ -11,12 +12,12 @@ interface RatingItemOverviewProps {
 
 const RatingItemOverviewComponent: React.FC<RatingItemOverviewProps> = ({ itemId, itemName, itemComments, itemScore, itemImageURI }): JSX.Element => {
     return (
-        <View style={styles.box}>
+        <View style={defaultStyles.card_container}>
             <Text></Text>
-            <View style={{ flex: 3 }}>
-                <Text style={styles.title}>{itemName}</Text>
-                <Text>{itemComments}</Text>
-                <Text>{itemScore} / 10</Text>
+            <View style={{ flex: 3, width:'100%' }}>
+                <Text style={defaultStyles.card_title}>{itemName}</Text>
+                <Text style={defaultStyles.card_description}>{itemComments}</Text>
+                <Text style={defaultStyles.card_description}>{itemScore} / 10</Text>
             </View>
             <View style={{ flex: 1 }}>
                 {itemImageURI ? (
@@ -24,31 +25,8 @@ const RatingItemOverviewComponent: React.FC<RatingItemOverviewProps> = ({ itemId
                 ) : (<></>)}
             </View>
         </View>
-
-
     );
 }
-
-const styles = StyleSheet.create({
-    box: {
-        backgroundColor: 'lightgreen',
-        padding: 16,
-        borderRadius: 8,
-        marginVertical: 8,
-        flexDirection: 'row',
-        width:'100%',
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    description: {
-        fontSize: 14,
-        color: 'red',
-    },
-});
-
 
 export default RatingItemOverviewComponent;
 export type { RatingItemOverviewProps };

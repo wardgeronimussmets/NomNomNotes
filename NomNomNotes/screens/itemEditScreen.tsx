@@ -1,10 +1,12 @@
 import firestore from '@react-native-firebase/firestore';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
 import { RatingItemOverviewProps } from '../components/ratingItemOverview';
+import defaultStyles from '../style';
+import { greyImageAsSource } from '../constants';
 
 
 type ItemEditProp = NativeStackScreenProps<RootStackParamlist, 'ItemEdit'>;
@@ -16,7 +18,7 @@ function getImageURIAsSrc(imageBase64: string, imageType: string): string {
 const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
     const [itemTitle, onChangeItemTitle] = useState(route.params.itemName);
     const [itemDescription, onChangeItemDescription] = useState(route.params.itemComments);
-    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string | null>(route.params.itemImageURI);
+    const [selectedImageURIAsSource, onChangeSelectedImageUriAsSource] = useState<string>(route.params.itemImageURI ? route.params.itemImageURI : greyImageAsSource);
     const [selectedImageUri, onChangeSelectedImageUri] = useState<string | null>(null);
     const [itemScore, onChangeItemScore] = useState(route.params.itemScore);
 
@@ -114,97 +116,91 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             await firestore().collection('ratingList').doc(ratingListRef).update({
                 ratingItems: currentArray
             })
-            .catch((err) => {
-                console.log(err);
-            });
+                .catch((err) => {
+                    console.log(err);
+                });
         }
         navigation.goBack();
     }
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerTitle: isCreating?"Create new item":"Edit existing item",
+            headerTitle: isCreating ? "Create new item" : "Edit existing item",
             headerRight: () => (
                 !isCreating && (
                     <Button
-                    onPress={removeItem}
-                    title="Remove Item"
-                />
+                        onPress={removeItem}
+                        title="Remove Item"
+                    />
                 )
             ),
         });
     });
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-        },
-        title_text: {
-            fontSize: 30,
-            fontWeight: "bold",
-            paddingBottom: 50,
-        },
-        subtitle_text: {
-            fontSize: 20,
-            fontWeight: "bold",
-        },
-        normal_text: {
-            fontSize: 20,
-        },
-        logo: {
-            width: 200,
-            height: 200,
-        },
-        button: {
-            fontSize: 20,
-            padding: 5,
-        },
-    });
-
     return (
-        <View style={styles.container}>
-            <Text style={styles.subtitle_text}>Item title</Text>
+        <View style={defaultStyles.form_container}>
+            <Text style={defaultStyles.form_title}>Item title</Text>
             <TextInput
                 onChangeText={onChangeItemTitle}
                 value={itemTitle}
-                style={styles.normal_text}
+                style={defaultStyles.form_normal}
                 placeholder='new list name' />
-            <Text style={styles.subtitle_text}>Item score</Text>
+            <Text style={defaultStyles.form_title}>Item score</Text>
             <TextInput
                 onChangeText={onChangeItemScore}
                 value={itemScore}
                 keyboardType='numeric'
-                style={styles.normal_text}
+                style={defaultStyles.form_normal}
                 placeholder='item score' />
-            <Text style={styles.subtitle_text}>Item comments</Text>
+            <Text style={defaultStyles.form_title}>Item comments</Text>
             <TextInput
                 onChangeText={onChangeItemDescription}
                 value={itemDescription}
-                style={styles.normal_text}
+                style={defaultStyles.form_normal}
                 placeholder='list description' />
 
 
-            <Text style={styles.subtitle_text}>Item image</Text>
-            {selectedImageURIAsSource ? (
+            <Text style={defaultStyles.form_title}>Item image</Text>
+
+            <TouchableOpacity
+                onPress={openImagePicker}
+            >
+                <ImageBackground
+                    style={defaultStyles.form_logo}
+                    source={{ uri: selectedImageURIAsSource }}>
+                    {selectedImageURIAsSource === greyImageAsSource ? (
+                        <>
+                            <View style={defaultStyles.form_logo_text_view}>
+                                <Text style={defaultStyles.form_normal}>touch to edit</Text>
+                            </View>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+
+                </ImageBackground>
+            </TouchableOpacity>
+
+            {/* {selectedImageURIAsSource ? (
                 <TouchableOpacity
                     onPress={openImagePicker}
                 >
                     <Image
-                        style={styles.logo}
+                        style={defaultStyles.form_logo}
                         source={{ uri: selectedImageURIAsSource }}></Image>
                 </TouchableOpacity>
             ) : (
-                <View style={styles.button}>
+
+
+                <View style={defaultStyles.form_logo}>
+
                     <Button
-                        title='upload list icon'
+                        title='upload item picture'
                         onPress={openImagePicker} />
                 </View>
 
-            )}
-
-            <View style={styles.button}>
+            )} */}
+            <View>
                 <Button
                     title={isCreating ? "Create item" : "Edit item"}
                     onPress={storeNewItem} />

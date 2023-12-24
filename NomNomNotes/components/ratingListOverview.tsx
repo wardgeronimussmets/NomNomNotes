@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import defaultStyles from '../style.js';
 
 interface RatingListOverviewComponentProps {
   docId: string;
@@ -8,12 +9,14 @@ interface RatingListOverviewComponentProps {
   imageURI: string;
 }
 
+
+
 const RatingListOverviewComponent: React.FC<RatingListOverviewComponentProps> = ({ docId, title, description, imageURI }) => {
   return (
-    <View style={styles.box}>
+    <View style={defaultStyles.card_container}>
       <View style={{ flex: 4 }}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <Text style={defaultStyles.card_title}>{title}</Text>
+        <Text style={defaultStyles.card_description}>{description}</Text>
       </View>
       <View style={{ flex: 2 }}>
         {imageURI ? (
@@ -23,24 +26,5 @@ const RatingListOverviewComponent: React.FC<RatingListOverviewComponentProps> = 
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  box: {
-    backgroundColor: 'green',
-    padding: 16,
-    borderRadius: 8,
-    marginVertical: 8,
-    flexDirection: 'row'
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 14,
-    color: 'red',
-  },
-});
 
 export default RatingListOverviewComponent;

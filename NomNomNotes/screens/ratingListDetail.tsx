@@ -5,12 +5,13 @@ import React, { useLayoutEffect, useState } from "react";
 import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
+import defaultStyles from '../style';
 
 interface RatingListDetailPropsStructure {
     ratingListId: string;
     ratingListTitle: string;
     ratingListDescription: string;
-    ratingListImageURI: string|null;
+    ratingListImageURI: string | null;
     uid: string;
 }
 
@@ -19,7 +20,7 @@ type RatingListDetailProp = NativeStackScreenProps<RootStackParamlist, 'RatingLi
 
 const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route }): JSX.Element => {
 
-    const {uid, ratingListId, ratingListTitle, ratingListDescription} = route.params;
+    const { uid, ratingListId, ratingListTitle, ratingListDescription } = route.params;
 
     const [ratingItemComponents, setRatingItemComponents] = useState<JSX.Element[]>([]);
     const [indexForNewItem, setIndexForNewItem] = useState<number>(-1);
@@ -36,7 +37,7 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                         const ratingItemsData = data.ratingItems as RatingItemOverviewProps[];
                         var components: JSX.Element[] = [];
                         var index = 0;
-                        if(ratingItemsData){
+                        if (ratingItemsData) {
                             ratingItemsData.forEach(item => {
                                 var newIndex = index;
                                 components.push(
@@ -62,7 +63,7 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                                             itemImageURI={item.itemImageURI}
                                             itemScore={item.itemScore}
                                         />
-    
+
                                     </TouchableOpacity>
                                 );
                                 index++;
@@ -84,17 +85,17 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
 
     const removeList = () => {
         firestore().collection('ratingList').doc(ratingListId)
-        .delete()
-        .catch((err) => {
-            console.error("Couldn't delete the ratingList with id " +ratingListId);
-        });
+            .delete()
+            .catch((err) => {
+                console.error("Couldn't delete the ratingList with id " + ratingListId);
+            });
         navigation.goBack();
     }
 
     const editList = () => {
-        navigation.navigate('ListEdit',{
-            uid:uid,
-            isCreating:false,
+        navigation.navigate('ListEdit', {
+            uid: uid,
+            isCreating: false,
             itemImageURI: route.params.ratingListImageURI,
             listDescription: route.params.ratingListDescription,
             listTitle: route.params.ratingListTitle,
@@ -103,23 +104,23 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     }
 
     useLayoutEffect(() => {
-        navigation.setOptions({ 
+        navigation.setOptions({
             headerTitle: ratingListTitle,
             headerRight: () => (
-                <View style={styles.headerButtonContainer}>
-                    <View style={styles.headerButton}>
-                        <Button onPress={editList} title='Edit list'/>
+                <View style={defaultStyles.headerButtonContainer}>
+                    <View style={defaultStyles.leftHeaderButton}>
+                        <Button onPress={editList} title='Edit list' />
                     </View>
-                    <Button onPress={removeList} title='Remove list'/>
+                    <Button onPress={removeList} title='Remove list' />
                 </View>
-            ) 
+            )
         });
     });
 
     const createNewItemCallback = () => {
         navigation.navigate('ItemEdit', {
             uid: uid,
-            ratingListRef: ratingListId, 
+            ratingListRef: ratingListId,
             itemIndex: indexForNewItem,
             itemComments: "",
             itemImageURI: null,
@@ -127,21 +128,10 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
             itemScore: "",
             isCreating: true,
         });
-}
-
-const styles= StyleSheet.create({
-    headerButtonContainer: {
-        flexDirection:'row'
-    },
-    headerButton: {
-        paddingHorizontal: 10
     }
 
-});
-
-return (
-    <View>
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+    return (
+        <View>
             {ratingItemComponents.length === 0 ? (
                 <View style={{ backgroundColor: 'grey' }}>
                     <Text>No rating items available</Text>
@@ -151,10 +141,9 @@ return (
                     {ratingItemComponents}
                 </ScrollView>
             )}
+            <Button title="Create new item" onPress={createNewItemCallback} />
         </View>
-        <Button title="Create new item" onPress={createNewItemCallback} />
-    </View>
-)
+    )
 }
 
 export default RatingDetailScreen;
