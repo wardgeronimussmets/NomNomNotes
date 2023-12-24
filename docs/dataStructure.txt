@@ -10,7 +10,6 @@ ratingList
             comments
             rating
 
-user
+users
     userID
-        allowedRatingLists[]: autoId1
 

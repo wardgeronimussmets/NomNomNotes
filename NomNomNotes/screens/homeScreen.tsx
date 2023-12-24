@@ -24,7 +24,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
     React.useCallback(() => {
       const fetchRatingList = async () => {
         try {
-          const querySnapshot = await firestore().collection('ratingList').get();
+          const querySnapshot = await firestore().collection('ratingList').where('allowedUsers','array-contains',uid).get();
           const components = querySnapshot.docs.map((doc) => (
             <TouchableOpacity onPress={() => {
               navigation.navigate("RatingListDetail", {
