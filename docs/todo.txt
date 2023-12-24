@@ -1,5 +1,5 @@
 volgens mij gaat shit de fan hitten als ge met twee tegelijk een item zou verwijderen door gewoon de index als key te gebruiken
 
 firestore rules moeten eigenlijk ook nog + bescherming van data
-edit potlood in header toevoegen zodat ge dat kunt editen?
-optie om items te verwijderen ontbreekt ook nog
+styling
+logout knop

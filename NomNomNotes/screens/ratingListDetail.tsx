@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
 
@@ -36,38 +36,40 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                         const ratingItemsData = data.ratingItems as RatingItemOverviewProps[];
                         var components: JSX.Element[] = [];
                         var index = 0;
-                        ratingItemsData.forEach(item => {
-                            var newIndex = index;
-                            components.push(
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        navigation.navigate('ItemEdit', {
-                                            uid: uid,
-                                            ratingListRef: ratingListId,
-                                            itemIndex: newIndex,
-                                            itemComments: item.itemComments,
-                                            itemImageURI: item.itemImageURI,
-                                            itemName: item.itemName,
-                                            itemScore: item.itemScore,
-                                            isCreating: false,
-                                        });
-                                    }}
-                                    key={newIndex}
-                                >
-                                    <RatingItemOverviewComponent
-                                        itemId={newIndex.toString()}
-                                        itemName={item.itemName}
-                                        itemComments={item.itemComments}
-                                        itemImageURI={item.itemImageURI}
-                                        itemScore={item.itemScore}
-                                    />
-
-                                </TouchableOpacity>
-                            );
-                            index++;
-                        });
-                        setRatingItemComponents(components);
-                        setIndexForNewItem(index);
+                        if(ratingItemsData){
+                            ratingItemsData.forEach(item => {
+                                var newIndex = index;
+                                components.push(
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            navigation.navigate('ItemEdit', {
+                                                uid: uid,
+                                                ratingListRef: ratingListId,
+                                                itemIndex: newIndex,
+                                                itemComments: item.itemComments,
+                                                itemImageURI: item.itemImageURI,
+                                                itemName: item.itemName,
+                                                itemScore: item.itemScore,
+                                                isCreating: false,
+                                            });
+                                        }}
+                                        key={newIndex}
+                                    >
+                                        <RatingItemOverviewComponent
+                                            itemId={newIndex.toString()}
+                                            itemName={item.itemName}
+                                            itemComments={item.itemComments}
+                                            itemImageURI={item.itemImageURI}
+                                            itemScore={item.itemScore}
+                                        />
+    
+                                    </TouchableOpacity>
+                                );
+                                index++;
+                            });
+                            setRatingItemComponents(components);
+                            setIndexForNewItem(index);
+                        }
                     }
                 } catch (error) {
                     console.error('Error fetching rating items:', error);
@@ -145,7 +147,9 @@ return (
                     <Text>No rating items available</Text>
                 </View>
             ) : (
-                <>{ratingItemComponents}</>
+                <ScrollView>
+                    {ratingItemComponents}
+                </ScrollView>
             )}
         </View>
         <Button title="Create new item" onPress={createNewItemCallback} />

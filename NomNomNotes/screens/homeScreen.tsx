@@ -1,11 +1,12 @@
 import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
-import { Button, SafeAreaView, StatusBar, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
+import React, { useLayoutEffect, useState } from 'react';
+import { Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { RootStackParamlist } from '../App';
 import RatingListOverviewComponent from '../components/ratingListOverview';
+import auth from '@react-native-firebase/auth';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamlist, 'Home'>;
 
@@ -15,7 +16,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const {uid} = route.params;
+  const { uid } = route.params;
 
   const [ratingListComponents, setRatingListComponents] = useState<JSX.Element[]>([]);
 
@@ -31,7 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
                 ratingListTitle: doc.data().name,
                 ratingListDescription: doc.data().description,
                 uid: uid,
-                ratingListImageURI:doc.data().imageURI
+                ratingListImageURI: doc.data().imageURI
               });
             }}
               key={doc.id}>
@@ -42,31 +43,47 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
                 imageURI={doc.data().imageURI}
               />
             </TouchableOpacity>
-  
+
           ));
           setRatingListComponents(components);
         } catch (error) {
           console.error('Error fetching ratingList: ', error);
         }
       };
-  
+
       fetchRatingList();
-        return () => {
-            // Cleanup function
-        };
+      return () => {
+        // Cleanup function
+      };
     }, [])
   );
 
   const createNewListCallback = () => {
-    navigation.navigate('ListEdit', { 
-      uid: uid, 
-      isCreating:true,
-      itemImageURI:null,
-      listDescription:"",
-      listTitle:"",
+    navigation.navigate('ListEdit', {
+      uid: uid,
+      isCreating: true,
+      itemImageURI: null,
+      listDescription: "",
+      listTitle: "",
       ratingListId: null
     });
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title='Logout'
+          onPress={() => {
+            auth().signOut()
+              .catch((err) => {
+                console.error(err);
+              });
+          }}
+        />
+      )
+    })
+  });
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -80,7 +97,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
         </View>
       ) :
         (
-          <>{ratingListComponents}</>
+          <ScrollView>
+            {ratingListComponents}
+          </ScrollView>
         )}
       <Button title="Create new list" onPress={createNewListCallback} />
     </SafeAreaView>
