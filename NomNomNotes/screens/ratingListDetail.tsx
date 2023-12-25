@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView, ImageBackground } from "react-native";
+import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView, ImageBackground, Alert } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
 import defaultStyles, { buttonBackgroundColor, isDarkMode } from '../style';
@@ -85,12 +85,23 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     );
 
     const removeList = () => {
-        firestore().collection('ratingList').doc(ratingListId)
-            .delete()
-            .catch((err) => {
-                console.error("Couldn't delete the ratingList with id " + ratingListId);
-            });
-        navigation.goBack();
+        const alertTitle = "Are you sure you want to remove " + ratingListTitle + "?";
+        Alert.alert(alertTitle, 'This will permanentely delete the list', [
+            {
+                text: "Leave me alone I know what I'm doing",
+                onPress: () => {
+                    firestore().collection('ratingList').doc(ratingListId)
+                    .delete()
+                    .catch((err) => {
+                        console.error("Couldn't delete the ratingList with id " + ratingListId);
+                    });
+                navigation.goBack();                },
+            },
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+          ]);
     }
 
     const editList = () => {

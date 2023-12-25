@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
 import { RatingItemOverviewProps } from '../components/ratingItemOverview';
@@ -102,7 +102,24 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
         navigation.goBack();
     }
 
+    const startRemoveItem = () => {
+        const alertTitle = "Are you sure you want to remove " + itemTitle + "?";
+        Alert.alert(alertTitle, 'This will permanentely delete the item', [
+            {
+                text: "Leave me alone I know what I'm doing",
+                onPress: () => {
+                    removeItem();
+                },
+            },
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+        ]);
+    }
+
     const removeItem = async () => {
+
         const doc = await firestore().collection('ratingList').doc(ratingListRef).get();
         const currentArray: RatingItemOverviewProps[] = doc.data()?.ratingItems;
         if (!currentArray) {
@@ -122,6 +139,8 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                 });
         }
         navigation.goBack();
+
+
     }
 
     useLayoutEffect(() => {
@@ -130,7 +149,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             headerRight: () => (
                 !isCreating && (
                     <TouchableOpacity
-                        onPress={removeItem}
+                        onPress={startRemoveItem}
                         style={defaultStyles.navigationHeaderVectorButtonView}
                     >
                         <VectorImage

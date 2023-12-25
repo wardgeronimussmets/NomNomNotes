@@ -1,3 +1,4 @@
 volgens mij gaat shit de fan hitten als ge met twee tegelijk een item zou verwijderen door gewoon de index als key te gebruiken
 
 when removing list, ask if the user is sure
+dont keep saving the grey images as your doing right now
