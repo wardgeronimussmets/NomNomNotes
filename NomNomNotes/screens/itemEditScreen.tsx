@@ -190,7 +190,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                 onChangeText={onChangeItemTitle}
                 value={itemTitle}
                 style={defaultStyles.form_normal}
-                placeholder='new list name'
+                placeholder='new item name'
                 placeholderTextColor={formPlaceholderColor} />
 
             <Text style={defaultStyles.form_title}>Item score</Text>
@@ -212,7 +212,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                 onChangeText={onChangeItemDescription}
                 value={itemDescription}
                 style={defaultStyles.form_normal}
-                placeholder='list description'
+                placeholder='item comments'
                 placeholderTextColor={formPlaceholderColor} />
 
 
