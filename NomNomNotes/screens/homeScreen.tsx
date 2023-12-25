@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useLayoutEffect, useState } from 'react';
-import { Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { RootStackParamlist } from '../App';
 import RatingListOverviewComponent from '../components/ratingListOverview';
 import defaultStyles, {isDarkMode, appBackgroundColor, buttonBackgroundColor} from '../style';
@@ -15,6 +15,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
   const { uid } = route.params;
 
   const [ratingListComponents, setRatingListComponents] = useState<JSX.Element[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -45,12 +47,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
         } catch (error) {
           console.error('Error fetching ratingList: ', error);
         }
+        setLoading(false);
       };
 
       fetchRatingList();
-      return () => {
-        // Cleanup function
-      };
     }, [])
   );
 
@@ -88,16 +88,25 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={appBackgroundColor}
       />
-      {ratingListComponents.length === 0 ? (
-        <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'grey' }}>
-          <Text style={{ fontSize: 20, padding: 50 }}>No rating lists available</Text>
-        </View>
-      ) :
-        (
-          <ScrollView>
-            {ratingListComponents}
-          </ScrollView>
-        )}
+      {loading ? (
+        <ActivityIndicator size="large"></ActivityIndicator>
+      ):(
+        <>
+        {ratingListComponents.length === 0 ? (
+          <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'grey' }}>
+            <Text style={{ fontSize: 20, padding: 50 }}>No rating lists available</Text>
+          </View>
+        ) :
+          (
+            <ScrollView>
+              {ratingListComponents}
+            </ScrollView>
+          )}
+        </>
+      )
+      }
+
+
       <Button title="Create new list" color={buttonBackgroundColor} onPress={createNewListCallback} />
     </SafeAreaView>
   );

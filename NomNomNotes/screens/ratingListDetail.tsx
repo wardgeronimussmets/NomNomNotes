@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView, ImageBackground, Alert } from "react-native";
+import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView, ImageBackground, Alert, ActivityIndicator } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
 import defaultStyles, { buttonBackgroundColor, isDarkMode } from '../style';
@@ -25,7 +25,7 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
 
     const [ratingItemComponents, setRatingItemComponents] = useState<JSX.Element[]>([]);
     const [indexForNewItem, setIndexForNewItem] = useState<number>(-1);
-
+    const [loading, setLoading] = useState<boolean>(true);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -76,11 +76,9 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                 } catch (error) {
                     console.error('Error fetching rating items:', error);
                 }
+                setLoading(false);
             };
             fetchRatingItems();
-            return () => {
-                // Cleanup function
-            };
         }, [])
     );
 
@@ -91,17 +89,18 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                 text: "Leave me alone I know what I'm doing",
                 onPress: () => {
                     firestore().collection('ratingList').doc(ratingListId)
-                    .delete()
-                    .catch((err) => {
-                        console.error("Couldn't delete the ratingList with id " + ratingListId);
-                    });
-                navigation.goBack();                },
+                        .delete()
+                        .catch((err) => {
+                            console.error("Couldn't delete the ratingList with id " + ratingListId);
+                        });
+                    navigation.goBack();
+                },
             },
             {
-              text: 'Cancel',
-              style: 'cancel',
+                text: 'Cancel',
+                style: 'cancel',
             },
-          ]);
+        ]);
     }
 
     const editList = () => {
@@ -158,14 +157,20 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
 
     return (
         <View style={{ ...defaultStyles.app_style, flex: 1 }}>
-            {ratingItemComponents.length === 0 ? (
-                <View style={{ backgroundColor: 'grey' }}>
-                    <Text>No rating items available</Text>
-                </View>
+            {loading ? (
+                <ActivityIndicator size='large'></ActivityIndicator>
             ) : (
-                <ScrollView>
-                    {ratingItemComponents}
-                </ScrollView>
+                <>
+                    {ratingItemComponents.length === 0 ? (
+                        <View style={{ backgroundColor: 'grey' }}>
+                            <Text>No rating items available</Text>
+                        </View>
+                    ) : (
+                        <ScrollView>
+                            {ratingItemComponents}
+                        </ScrollView>
+                    )}
+                </>
             )}
             <Button color={buttonBackgroundColor} title="Create new item" onPress={createNewItemCallback} />
         </View>

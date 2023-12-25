@@ -54,7 +54,7 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
         });
     }
 
-    const storeNewList = () => {
+    const storeNewList = async() => {
         const newList = {
             name: listTitle,
             description: listDescription,
@@ -75,16 +75,21 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
         }
         else{
             if(ratingListId){
+                const querySnapshot = firestore().collection('ratingList').doc(ratingListId).get();
+                newList.ratingItems = (await querySnapshot).data()?.ratingItems;
+                if(!newList.ratingItems){
+                    newList.ratingItems = [];
+                }
                 firestore().collection('ratingList').doc(ratingListId).update(newList)
                 .catch((err) => {
                     console.error(err);
                 });
             }
             else{
-                console.error("Tried to edit a ratingList with id " + ratingListId + " if you haven't realised yet, it was null dumbass");
+                console.error("Cannot store new list if the ratingListId is null");
             }
         }
-        navigation.goBack();
+        navigation.popToTop();
     }
 
     useLayoutEffect(() => {
