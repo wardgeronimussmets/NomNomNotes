@@ -4,7 +4,7 @@ import { useLayoutEffect, useState } from 'react';
 import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
-import defaultStyles, { buttonBackgroundColor } from '../style';
+import defaultStyles, { buttonBackgroundColor, formPlaceholderColor, normalFontSize } from '../style';
 import { greyImageAsSource } from '../constants';
 
 
@@ -54,38 +54,38 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
         });
     }
 
-    const storeNewList = async() => {
+    const storeNewList = async () => {
         const newList = {
             name: listTitle,
             description: listDescription,
-            imageURI: (selectedImageURIAsSource===greyImageAsSource)?null:selectedImageURIAsSource,
+            imageURI: (selectedImageURIAsSource === greyImageAsSource) ? null : selectedImageURIAsSource,
             allowedUsers: [uid],
             ratingItems: []
         };
-        if(isCreating){
+        if (isCreating) {
             firestore()
-            .collection('ratingList')
-            .add(newList)
-            .catch((err) => {
-                console.log(err);
-            })
-            .then(() => {
-                console.log("storing new list");
-            });
+                .collection('ratingList')
+                .add(newList)
+                .catch((err) => {
+                    console.log(err);
+                })
+                .then(() => {
+                    console.log("storing new list");
+                });
         }
-        else{
-            if(ratingListId){
+        else {
+            if (ratingListId) {
                 const querySnapshot = firestore().collection('ratingList').doc(ratingListId).get();
                 newList.ratingItems = (await querySnapshot).data()?.ratingItems;
-                if(!newList.ratingItems){
+                if (!newList.ratingItems) {
                     newList.ratingItems = [];
                 }
                 firestore().collection('ratingList').doc(ratingListId).update(newList)
-                .catch((err) => {
-                    console.error(err);
-                });
+                    .catch((err) => {
+                        console.error(err);
+                    });
             }
-            else{
+            else {
                 console.error("Cannot store new list if the ratingListId is null");
             }
         }
@@ -105,13 +105,17 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
                 onChangeText={onChangeListTitle}
                 value={listTitle}
                 style={defaultStyles.form_normal}
-                placeholder='new list name' />
+                placeholder='new list name'
+                placeholderTextColor={formPlaceholderColor}/>
+
             <Text style={defaultStyles.form_title}>List description</Text>
             <TextInput
                 onChangeText={onChangeListDescription}
                 value={listDescription}
                 style={defaultStyles.form_normal}
-                placeholder='list description' />
+                placeholder='list description'
+                placeholderTextColor={formPlaceholderColor}/>
+
             <Text style={defaultStyles.form_title}>List logo</Text>
             <TouchableOpacity
                 onPress={openImagePicker}
@@ -122,7 +126,7 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
                     {selectedImageURIAsSource === greyImageAsSource ? (
                         <>
                             <View style={defaultStyles.form_logo_text_view}>
-                                <Text style={defaultStyles.form_normal}>touch to edit</Text>
+                                <Text style={{ fontSize: normalFontSize, color: 'black' }}>touch to edit</Text>
                             </View>
                         </>
                     ) : (
@@ -134,7 +138,7 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
             <View>
                 <Button
                     color={buttonBackgroundColor}
-                    title={isCreating?"Create list":"Edit list"}
+                    title={isCreating ? "Create list" : "Edit list"}
                     onPress={storeNewList} />
             </View>
 

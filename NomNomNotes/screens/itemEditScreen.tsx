@@ -5,7 +5,7 @@ import { Alert, Button, Image, ImageBackground, StyleSheet, Text, TextInput, Tou
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
 import { RatingItemOverviewProps } from '../components/ratingItemOverview';
-import defaultStyles, { buttonBackgroundColor } from '../style';
+import defaultStyles, { buttonBackgroundColor, formPlaceholderColor, normalFontSize } from '../style';
 import { greyImageAsSource } from '../constants';
 import VectorImage from 'react-native-vector-image';
 
@@ -55,51 +55,73 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
         });
     }
 
+    const scoreIsValid = ():boolean => {
+        if(!itemScore){
+            return false;
+        }
+        try{
+            const numb = Number(itemScore);
+            if(numb > 10 || numb < 0){
+                return false;
+            }
+            return true;
+        }
+        catch{
+            return false;
+        }
+    }
+
     const storeNewItem = async () => {
-        const newItem: RatingItemOverviewProps = {
-            itemId: itemIndex.toString(),
-            itemName: itemTitle,
-            itemComments: itemDescription,
-            itemImageURI: (selectedImageURIAsSource===greyImageAsSource)?null:selectedImageURIAsSource,
-            itemScore: itemScore
-        }
-
-        if (isCreating) {
-            firestore()
-                .collection('ratingList').doc(ratingListRef).
-                update({
-                    ratingItems: firestore.FieldValue.arrayUnion(newItem)
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-        else {
-            const doc = await firestore().collection('ratingList').doc(ratingListRef).get();
-            const currentArray: RatingItemOverviewProps[] = doc.data()?.ratingItems;
-            if (!currentArray) {
-                console.log("Couldn't get ratingItems for the given doc " + ratingListRef);
+        if(scoreIsValid()){
+            const newItem: RatingItemOverviewProps = {
+                itemId: itemIndex.toString(),
+                itemName: itemTitle,
+                itemComments: itemDescription,
+                itemImageURI: (selectedImageURIAsSource === greyImageAsSource) ? null : selectedImageURIAsSource,
+                itemScore: itemScore
             }
-            else if (!currentArray[itemIndex]) {
-                console.log("no item in ratingItem array for index " + itemIndex + " the array has length=" + currentArray.length);
-            }
-            else {
-                currentArray[itemIndex].itemId = itemIndex.toString();
-                currentArray[itemIndex].itemName = itemTitle;
-                currentArray[itemIndex].itemComments = itemDescription;
-                currentArray[itemIndex].itemImageURI = (selectedImageURIAsSource===greyImageAsSource)?null:selectedImageURIAsSource;
-                currentArray[itemIndex].itemScore = itemScore;
-
-                await firestore().collection('ratingList').doc(ratingListRef).update({
-                    ratingItems: currentArray
-                })
+    
+            if (isCreating) {
+                firestore()
+                    .collection('ratingList').doc(ratingListRef).
+                    update({
+                        ratingItems: firestore.FieldValue.arrayUnion(newItem)
+                    })
                     .catch((err) => {
                         console.log(err);
                     });
             }
-
+            else {
+                const doc = await firestore().collection('ratingList').doc(ratingListRef).get();
+                const currentArray: RatingItemOverviewProps[] = doc.data()?.ratingItems;
+                if (!currentArray) {
+                    console.log("Couldn't get ratingItems for the given doc " + ratingListRef);
+                }
+                else if (!currentArray[itemIndex]) {
+                    console.log("no item in ratingItem array for index " + itemIndex + " the array has length=" + currentArray.length);
+                }
+                else {
+                    currentArray[itemIndex].itemId = itemIndex.toString();
+                    currentArray[itemIndex].itemName = itemTitle;
+                    currentArray[itemIndex].itemComments = itemDescription;
+                    currentArray[itemIndex].itemImageURI = (selectedImageURIAsSource === greyImageAsSource) ? null : selectedImageURIAsSource;
+                    currentArray[itemIndex].itemScore = itemScore;
+    
+                    await firestore().collection('ratingList').doc(ratingListRef).update({
+                        ratingItems: currentArray
+                    })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+    
+            }
+            navigation.goBack();
         }
-        navigation.goBack();
+        else{
+            Alert.alert('Invalid score', 'The score should be a value between 0 and 10');
+        }
+        
     }
 
     const startRemoveItem = () => {
@@ -168,20 +190,30 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                 onChangeText={onChangeItemTitle}
                 value={itemTitle}
                 style={defaultStyles.form_normal}
-                placeholder='new list name' />
+                placeholder='new list name'
+                placeholderTextColor={formPlaceholderColor} />
+
             <Text style={defaultStyles.form_title}>Item score</Text>
-            <TextInput
-                onChangeText={onChangeItemScore}
-                value={itemScore}
-                keyboardType='numeric'
-                style={defaultStyles.form_normal}
-                placeholder='item score' />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TextInput
+                    onChangeText={onChangeItemScore}
+                    value={itemScore}
+                    keyboardType='numeric'
+                    style={defaultStyles.form_normal}
+                    placeholder='item score'
+                    placeholderTextColor={formPlaceholderColor}
+                />
+                <Text style={{ fontSize: normalFontSize, paddingLeft: 5 }}> / 10</Text>
+            </View>
+
+
             <Text style={defaultStyles.form_title}>Item comments</Text>
             <TextInput
                 onChangeText={onChangeItemDescription}
                 value={itemDescription}
                 style={defaultStyles.form_normal}
-                placeholder='list description' />
+                placeholder='list description'
+                placeholderTextColor={formPlaceholderColor} />
 
 
             <Text style={defaultStyles.form_title}>Item image</Text>
@@ -195,7 +227,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                     {selectedImageURIAsSource === greyImageAsSource ? (
                         <>
                             <View style={defaultStyles.form_logo_text_view}>
-                                <Text style={defaultStyles.form_normal}>touch to edit</Text>
+                                <Text style={{ fontSize: normalFontSize, color: 'black' }}>touch to edit</Text>
                             </View>
                         </>
                     ) : (

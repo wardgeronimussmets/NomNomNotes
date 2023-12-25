@@ -6,6 +6,9 @@ const cardBackgroudColor = isDarkMode?'#235726':'#58e061';
 const appBackgroundColor = isDarkMode?'black':'white';
 const buttonBackgroundColor = isDarkMode?'#155e99':'#2296f3';
 const textColor = isDarkMode?'white':'black';
+const formPlaceholderColor = isDarkMode?'#696969':'#2d2e2e';
+
+const normalFontSize = 20;
 
 const defaultStyles = StyleSheet.create({
     app_style:{
@@ -54,11 +57,12 @@ const defaultStyles = StyleSheet.create({
         backgroundColor: appBackgroundColor,
     },
     form_title: {
-        fontSize: 20,
+        fontSize: normalFontSize+5,
         fontWeight: "bold",
     },
     form_normal: {
-        fontSize: 20,
+        fontSize: normalFontSize,
+        color: formPlaceholderColor
     },
     form_logo: {
         width: 200,
@@ -76,5 +80,5 @@ const defaultStyles = StyleSheet.create({
     },
 });
 
-export { cardBackgroudColor, isDarkMode, appBackgroundColor, buttonBackgroundColor, textColor };
+export { cardBackgroudColor, isDarkMode, appBackgroundColor, buttonBackgroundColor, textColor, normalFontSize, formPlaceholderColor };
 export default defaultStyles;
