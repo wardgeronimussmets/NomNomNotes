@@ -1,6 +1,8 @@
 VectorImage
 for vector image https://github.com/oblador/react-native-vector-image is used
 if you want to do IOS something should still be added, look at github
-when adding new svg run:
+first add new svg files to project then use them in VectorImage:
     npx react-native-vector-image generate
+    npx react-native run-android
 To add dark mode to your image, create a new file with an .dark.svg extension, ie image.svg = light and image.dark.svg = dark.
+No need to do something else, just reference the svg file it will recognize on its own

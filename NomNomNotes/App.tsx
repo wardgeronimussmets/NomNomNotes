@@ -14,23 +14,18 @@ import ItemEditScreen from './screens/itemEditScreen';
 import ListEditScreen from './screens/listEditScreen';
 import LoginScreen from './screens/loginScreen';
 import RatingDetailScreen, { RatingListDetailProps } from './screens/ratingListDetail';
+import defaultStyles, { textColor } from './style';
 
 
 type RootStackParamlist = {
   Home: { uid: string };
-  ListEdit: { uid: string, isCreating:boolean, listTitle:string, listDescription:string, itemImageURI:string|null, ratingListId: string|null };
-  ItemEdit: { uid: string, ratingListRef: string, itemIndex: number, itemName: string, itemComments: string, itemImageURI:string|null, itemScore:string, isCreating:boolean};
+  ListEdit: { uid: string, isCreating: boolean, listTitle: string, listDescription: string, itemImageURI: string | null, ratingListId: string | null };
+  ItemEdit: { uid: string, ratingListRef: string, itemIndex: number, itemName: string, itemComments: string, itemImageURI: string | null, itemScore: string, isCreating: boolean };
   RatingListDetail: RatingListDetailProps;
   Login: undefined;
 }
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
   useEffect(() => {
@@ -49,7 +44,13 @@ function App(): React.JSX.Element {
 
   return (
     <NavigationContainer>
-      <RootStack.Navigator>
+      <RootStack.Navigator
+        screenOptions={{
+          headerStyle:defaultStyles.navigationHeader,
+          headerTitleStyle:defaultStyles.navigationHeaderTitle,
+          headerTintColor:textColor
+        }}
+      >
         {user ? (
           <>
             <RootStack.Screen name='Home' component={HomeScreen} initialParams={{ uid: user.uid }} />

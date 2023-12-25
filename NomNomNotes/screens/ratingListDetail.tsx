@@ -2,10 +2,11 @@ import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useLayoutEffect, useState } from "react";
-import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { Button, Text, View, TouchableOpacity, StyleSheet, ScrollView, ImageBackground } from "react-native";
 import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
-import defaultStyles from '../style';
+import defaultStyles, { buttonBackgroundColor, isDarkMode } from '../style';
+import VectorImage from 'react-native-vector-image';
 
 interface RatingListDetailPropsStructure {
     ratingListId: string;
@@ -109,9 +110,23 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
             headerRight: () => (
                 <View style={defaultStyles.headerButtonContainer}>
                     <View style={defaultStyles.leftHeaderButton}>
-                        <Button onPress={editList} title='Edit list' />
+                        <TouchableOpacity
+                            onPress={editList}
+                            style={defaultStyles.navigationHeaderVectorButtonView}
+                        >
+                            <VectorImage
+                                style={defaultStyles.navigationHeaderVectorButton}
+                                source={require('../resources/edit.svg')}></VectorImage>
+                        </TouchableOpacity>
                     </View>
-                    <Button onPress={removeList} title='Remove list' />
+                    <TouchableOpacity
+                        onPress={removeList}
+                        style={defaultStyles.navigationHeaderVectorButtonView}
+                    >
+                        <VectorImage
+                            style={defaultStyles.navigationHeaderVectorButton}
+                            source={require("../resources/delete.svg")}></VectorImage>
+                    </TouchableOpacity>
                 </View>
             )
         });
@@ -131,7 +146,7 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
     }
 
     return (
-        <View>
+        <View style={{ ...defaultStyles.app_style, flex: 1 }}>
             {ratingItemComponents.length === 0 ? (
                 <View style={{ backgroundColor: 'grey' }}>
                     <Text>No rating items available</Text>
@@ -141,8 +156,9 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
                     {ratingItemComponents}
                 </ScrollView>
             )}
-            <Button title="Create new item" onPress={createNewItemCallback} />
+            <Button color={buttonBackgroundColor} title="Create new item" onPress={createNewItemCallback} />
         </View>
+
     )
 }
 

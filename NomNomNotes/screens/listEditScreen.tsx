@@ -4,7 +4,7 @@ import { useLayoutEffect, useState } from 'react';
 import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
-import defaultStyles from '../style';
+import defaultStyles, { buttonBackgroundColor } from '../style';
 import { greyImageAsSource } from '../constants';
 
 
@@ -128,6 +128,7 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
             </TouchableOpacity>
             <View>
                 <Button
+                    color={buttonBackgroundColor}
                     title={isCreating?"Create list":"Edit list"}
                     onPress={storeNewList} />
             </View>

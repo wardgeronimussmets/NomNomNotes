@@ -5,8 +5,9 @@ import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, TouchableO
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import { RootStackParamlist } from '../App';
 import { RatingItemOverviewProps } from '../components/ratingItemOverview';
-import defaultStyles from '../style';
+import defaultStyles, { buttonBackgroundColor } from '../style';
 import { greyImageAsSource } from '../constants';
+import VectorImage from 'react-native-vector-image';
 
 
 type ItemEditProp = NativeStackScreenProps<RootStackParamlist, 'ItemEdit'>;
@@ -128,10 +129,14 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             headerTitle: isCreating ? "Create new item" : "Edit existing item",
             headerRight: () => (
                 !isCreating && (
-                    <Button
+                    <TouchableOpacity
                         onPress={removeItem}
-                        title="Remove Item"
-                    />
+                        style={defaultStyles.navigationHeaderVectorButtonView}
+                    >
+                        <VectorImage
+                            style={defaultStyles.navigationHeaderVectorButton}
+                            source={require("../resources/delete.svg")}></VectorImage>
+                    </TouchableOpacity>
                 )
             ),
         });
@@ -182,6 +187,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             </TouchableOpacity>
             <View>
                 <Button
+                    color={buttonBackgroundColor}
                     title={isCreating ? "Create item" : "Edit item"}
                     onPress={storeNewItem} />
             </View>

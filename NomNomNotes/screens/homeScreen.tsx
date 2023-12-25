@@ -1,20 +1,16 @@
+import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useLayoutEffect, useState } from 'react';
-import { Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Button, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { RootStackParamlist } from '../App';
 import RatingListOverviewComponent from '../components/ratingListOverview';
-import auth from '@react-native-firebase/auth';
+import defaultStyles, {isDarkMode, appBackgroundColor, buttonBackgroundColor} from '../style';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamlist, 'Home'>;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Element => {
-  const isDarkMode: boolean = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
   const { uid } = route.params;
 
@@ -74,6 +70,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
       headerRight: () => (
         <Button
           title='Logout'
+          color={buttonBackgroundColor}
           onPress={() => {
             auth().signOut()
               .catch((err) => {
@@ -86,10 +83,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
   });
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={{...defaultStyles.app_style, flex:1}}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        backgroundColor={appBackgroundColor}
       />
       {ratingListComponents.length === 0 ? (
         <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'grey' }}>
@@ -101,7 +98,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }): JSX.Eleme
             {ratingListComponents}
           </ScrollView>
         )}
-      <Button title="Create new list" onPress={createNewListCallback} />
+      <Button title="Create new list" color={buttonBackgroundColor} onPress={createNewListCallback} />
     </SafeAreaView>
   );
 };

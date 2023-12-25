@@ -1,8 +1,30 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Appearance } from "react-native";
 
-const cardBackgroudColor = '#4dc555';
+const isDarkMode = Appearance.getColorScheme() === 'dark';
+
+const cardBackgroudColor = isDarkMode?'#235726':'#58e061';
+const appBackgroundColor = isDarkMode?'black':'white';
+const buttonBackgroundColor = isDarkMode?'#155e99':'#2296f3';
+const textColor = isDarkMode?'white':'black';
 
 const defaultStyles = StyleSheet.create({
+    app_style:{
+        backgroundColor: appBackgroundColor,
+    },
+    navigationHeader:{
+      backgroundColor:isDarkMode?'#2b2b2b':'white',  
+    },
+    navigationHeaderTitle:{
+        color: textColor
+    },
+    navigationHeaderVectorButtonView:{
+        backgroundColor: buttonBackgroundColor,
+        padding:5,
+    },
+    navigationHeaderVectorButton:{
+        width:40,
+        height:40
+    },
     card_container: {
         backgroundColor: cardBackgroudColor,
         padding: 20,
@@ -29,6 +51,7 @@ const defaultStyles = StyleSheet.create({
         paddingHorizontal:20,
         justifyContent: "flex-start",
         alignItems: "flex-start",
+        backgroundColor: appBackgroundColor,
     },
     form_title: {
         fontSize: 20,
@@ -53,5 +76,5 @@ const defaultStyles = StyleSheet.create({
     },
 });
 
-export { cardBackgroudColor };
+export { cardBackgroudColor, isDarkMode, appBackgroundColor, buttonBackgroundColor, textColor };
 export default defaultStyles;
