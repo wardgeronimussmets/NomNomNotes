@@ -60,7 +60,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
             itemId: itemIndex.toString(),
             itemName: itemTitle,
             itemComments: itemDescription,
-            itemImageURI: selectedImageURIAsSource,
+            itemImageURI: (selectedImageURIAsSource===greyImageAsSource)?null:selectedImageURIAsSource,
             itemScore: itemScore
         }
 
@@ -87,7 +87,7 @@ const ItemEditScreen: React.FC<ItemEditProp> = ({ navigation, route }) => {
                 currentArray[itemIndex].itemId = itemIndex.toString();
                 currentArray[itemIndex].itemName = itemTitle;
                 currentArray[itemIndex].itemComments = itemDescription;
-                currentArray[itemIndex].itemImageURI = selectedImageURIAsSource;
+                currentArray[itemIndex].itemImageURI = (selectedImageURIAsSource===greyImageAsSource)?null:selectedImageURIAsSource;
                 currentArray[itemIndex].itemScore = itemScore;
 
                 await firestore().collection('ratingList').doc(ratingListRef).update({

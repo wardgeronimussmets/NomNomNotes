@@ -58,7 +58,7 @@ const ListEditScreen: React.FC<ListEditProps> = ({ navigation, route }) => {
         const newList = {
             name: listTitle,
             description: listDescription,
-            imageURI: selectedImageURIAsSource,
+            imageURI: (selectedImageURIAsSource===greyImageAsSource)?null:selectedImageURIAsSource,
             allowedUsers: [uid],
             ratingItems: []
         };
