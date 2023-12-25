@@ -7,6 +7,7 @@ import { RootStackParamlist } from "../App";
 import RatingItemOverviewComponent, { RatingItemOverviewProps } from "../components/ratingItemOverview";
 import defaultStyles, { buttonBackgroundColor, isDarkMode } from '../style';
 import VectorImage from 'react-native-vector-image';
+import { Int32 } from 'react-native/Libraries/Types/CodegenTypes';
 
 interface RatingListDetailPropsStructure {
     ratingListId: string;
@@ -36,6 +37,16 @@ const RatingDetailScreen: React.FC<RatingListDetailProp> = ({ navigation, route 
 
                     if (data) {
                         const ratingItemsData = data.ratingItems as RatingItemOverviewProps[];
+                        ratingItemsData.sort((a,b) => {
+                            const numberCompare:Int32 = Number(b.itemScore) -  Number(a.itemScore);
+                            if(numberCompare === 0){
+                                return a.itemName.localeCompare(b.itemName);
+                            }
+                            else{
+                                return numberCompare;
+                            }
+                        });
+
                         var components: JSX.Element[] = [];
                         var index = 0;
                         if (ratingItemsData) {
