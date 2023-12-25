@@ -5,3 +5,20 @@
 npm install react-native-screens react-native-safe-area-context
 npm i react-native-vector-image @klarna/react-native-vector-drawable
 npm i metro-react-native-babel-transformer
+
+
+
+
+
+
+
+  _____  ______ _____  _      ______     __
+ |  __ \|  ____|  __ \| |    / __ \ \   / /
+ | |  | | |__  | |__) | |   | |  | \ \_/ / 
+ | |  | |  __| |  ___/| |   | |  | |\   /  
+ | |__| | |____| |    | |___| |__| | | |   
+ |_____/|______|_|    |______\____/  |_|   
+                                           
+
+to quickly generate icons you can use:              (the -D flag means it is dependency for deployement aka not required to create the app)       
+npm i -D @bam.tech/react-native-make

@@ -1,1 +1,5 @@
 volgens mij gaat shit de fan hitten als ge met twee tegelijk een item zou verwijderen door gewoon de index als key te gebruiken
+
+sort lists alfabetical
+sort items op score
+betere manier om scores in te geven
